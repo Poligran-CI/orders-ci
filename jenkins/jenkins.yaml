@@ -1,0 +1,59 @@
+jenkins:
+  systemMessage: Jenkins configurado como codigo con JCasC
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: admin
+          name: Admin
+          password: ${JENKINS_ADMIN_PASSWORD}
+  authorizationStrategy: loggedInUsersCanDoAnything
+
+unclassified:
+  location:
+    url: ${JENKINS_PUBLIC_URL:-http://localhost:8080/}
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              scope: GLOBAL
+              id: github-token
+              description: Token de GitHub para el repo orders-ci
+              secret: ${GITHUB_TOKEN}
+
+jobs:
+  - script: |
+      def webhookMode = (System.getenv('USE_GITHUB_WEBHOOK') ?: 'false').toBoolean()
+
+      pipelineJob('integracion-continua-backend-orders-ci') {
+        description('Pipeline de integracion continua para orders-ci (rama master)')
+        properties {
+          pipelineTriggers {
+            triggers {
+              if (webhookMode) {
+                githubPush()
+              } else {
+                pollSCM {
+                  scmpoll_spec('H/2 * * * *')
+                }
+              }
+            }
+          }
+        }
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/Velasquez076/orders-ci')
+                }
+                branch('*/master')
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight()
+          }
+        }
+      }

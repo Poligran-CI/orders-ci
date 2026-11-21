@@ -1,0 +1,26 @@
+name: pedidos-ci-jenkins
+
+services:
+  jenkins:
+    container_name: jenkins
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jenkins-docker-casc:local
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    env_file:
+      - ../.env
+    environment:
+      CASC_JENKINS_CONFIG: /var/jenkins_casc/jenkins.yaml
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./jenkins.yaml:/var/jenkins_casc/jenkins.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  jenkins_home:
+    name: jenkins_home
