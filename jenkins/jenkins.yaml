@@ -23,6 +23,16 @@ credentials:
               description: Token de GitHub para el repo orders-ci
               secret: ${GITHUB_TOKEN}
 
+tool:
+  jdk:
+    installations:
+      - name: 'JDK21'
+        home: '/opt/jdk21'
+  maven:
+    installations:
+      - name: 'Maven3'
+        home: '/usr/share/maven'
+
 jobs:
   - script: |
       def webhookMode = (System.getenv('USE_GITHUB_WEBHOOK') ?: 'false').toBoolean()

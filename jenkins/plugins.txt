@@ -9,3 +9,4 @@ credentials-binding
 plain-credentials
 timestamper
 junit
+pipeline-stage-view

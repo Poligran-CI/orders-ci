@@ -7,6 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: jenkins-docker-casc:local
+    group_add:
+      - "${DOCKER_GID:-984}"
     restart: unless-stopped
     ports:
       - "8080:8080"
@@ -20,6 +22,11 @@ services:
       - jenkins_home:/var/jenkins_home
       - ./jenkins.yaml:/var/jenkins_casc/jenkins.yaml:ro
       - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker:ro
+      - /home/jd-velasquez/.jdks/corretto-21.0.13.1:/opt/jdk21:ro
+      - /usr/share/maven:/usr/share/maven:ro
+      - /usr/share/java:/usr/share/java:ro
+      - /etc/maven:/etc/maven:ro
 
 volumes:
   jenkins_home:
