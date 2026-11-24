@@ -1,0 +1,438 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------------
+% Paquetes
+% ---------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{codebg}{RGB}{246,248,250}
+\definecolor{codekw}{RGB}{0,92,197}
+\definecolor{codecm}{RGB}{106,115,125}
+\definecolor{codestr}{RGB}{3,47,98}
+\definecolor{ok}{RGB}{26,127,55}
+\definecolor{warn}{RGB}{154,103,0}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  keywordstyle=\color{codekw}\bfseries,
+  commentstyle=\color{codecm}\itshape,
+  stringstyle=\color{codestr},
+  frame=single,
+  rulecolor=\color{black!15},
+  breaklines=true,
+  columns=fullflexible,
+  showstringspaces=false,
+  xleftmargin=4pt,
+  xrightmargin=4pt,
+}
+\lstdefinelanguage{shell}{morekeywords={mvn,docker,git,cd,curl},sensitive=true,morecomment=[l]\#}
+
+\newcommand{\ok}{\textcolor{ok}{\textbf{Cumple}}}
+\newcommand{\parcial}{\textcolor{warn}{\textbf{Cumple con observación}}}
+\setlength{\emergencystretch}{3em} % evita que nombres de clases en \texttt salgan del margen
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+% ---------------------------------------------------------------
+% Datos de la entrega (completar)
+% ---------------------------------------------------------------
+\newcommand{\curso}{Integración Continua}
+\newcommand{\entrega}{Entrega 1 -- Pruebas automatizadas}
+\newcommand{\integrantes}{%
+  Integrante A \\ Integrante B \\ Integrante C \\ Integrante D}
+\newcommand{\docente}{Nombre del docente}
+\newcommand{\repositorio}{\url{https://github.com/Velasquez076/orders-ci}}
+
+\title{\textbf{\entrega}\\[4pt]\large Cálculo del total de pedidos con descuentos y validación de existencias}
+\author{\integrantes\\[6pt]\small \curso\ -- Semestre 7\\ \small Docente: \docente}
+\date{8 de noviembre de 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Este documento presenta la aplicación mínima construida para representar una parte del sistema de
+pedidos de la cadena de tiendas de barrio: el cálculo del total de un pedido con descuentos y la
+validación de existencias contra una base de datos. Se describe cómo se definió primero el
+comportamiento esperado, las 25 pruebas automáticas que lo verifican (ejecutables con un solo
+comando), la prueba que reproduce el error de descuentos del caso y las razones por las que la
+automatización reduce el costo y el tiempo frente a la revisión manual mensual. También se explica,
+con transparencia, una limitación del historial de versiones respecto al orden en que se escribieron
+pruebas y código.
+\end{abstract}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\newpage
+
+% ===============================================================
+\section{Resumen de cumplimiento}
+% ===============================================================
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{@{}L L l@{}}
+\toprule
+\textbf{Requisito} & \textbf{Evidencia} & \textbf{Estado}\\
+\midrule
+Aplicación mínima: total con descuentos y validación de existencias &
+Java 21 + Spring Boot 3 (sección~\ref{sec:app}) & \ok\\
+Al menos cinco pruebas automáticas & 25 pruebas (sección~\ref{sec:pruebas}) & \ok\\
+Ejecutables con un solo comando & \texttt{mvn test} o \texttt{./scripts/evidencias.sh docker} & \ok\\
+Prueba que reproduce el error de descuentos del caso &
+\texttt{CP04} (sección~\ref{sec:cp04}) & \ok\\
+Comportamiento esperado definido primero, con entradas y resultados &
+\texttt{docs/ESPECIFICACION.md} (sección~\ref{sec:spec}) & \ok\\
+Pruebas escritas antes que el código & Proceso y limitación del historial (sección~\ref{sec:tdd}) & \parcial\\
+Por qué la automatización reduce costo y tiempo & Sección~\ref{sec:costos} & \ok\\
+\bottomrule
+\end{tabularx}
+\caption{Requisitos de la entrega y dónde se evidencian.}
+\end{table}
+
+Repositorio: \repositorio.
+
+% ===============================================================
+\section{Contexto del problema}
+% ===============================================================
+
+La empresa es una cadena de tiendas de barrio que gestiona pedidos y despachos. En el caso descrito,
+los descuentos llegaron mal a los clientes: el porcentaje se aplicaba \emph{dos veces} sobre el mismo
+pedido, de modo que el cliente pagaba menos de lo debido y la empresa perdía margen en cada venta con
+descuento. El control existente era una \textbf{revisión manual mensual}, por lo que un error de este
+tipo podía permanecer activo hasta un mes antes de ser detectado, y su corrección dependía de que una
+persona revisara a mano pedidos, totales y existencias.
+
+El objetivo de esta entrega es mostrar que esas mismas verificaciones pueden expresarse como pruebas
+automáticas que se ejecutan en minutos, cada vez que el código cambia.
+
+% ===============================================================
+\section{Aplicación}
+\label{sec:app}
+% ===============================================================
+
+Se eligió \textbf{Java 21} con \textbf{Spring Boot 3.3}, \textbf{Maven} como herramienta de
+construcción, \textbf{JUnit 5} y \textbf{AssertJ} para las pruebas, y \textbf{PostgreSQL} como base
+de datos (H2 en memoria durante las pruebas).
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{@{}l L@{}}
+\toprule
+\textbf{Componente} & \textbf{Responsabilidad}\\
+\midrule
+\texttt{OrderCalculator} & Subtotal, descuento (una sola vez sobre el subtotal), total y redondeo a 2 decimales.\\
+\texttt{InventoryService} & Consulta y descuento de existencias en la tabla \texttt{inventory}.\\
+\texttt{OrderService} & Caso de uso: valida existencias de todos los ítems y calcula el total.\\
+\texttt{OrderController} & \texttt{POST /api/orders/total}: responde 200, 400 (datos inválidos) o 409 (sin existencias).\\
+\texttt{InfoController} & \texttt{GET /api/info}: indica el ambiente activo (\texttt{dev}, \texttt{test}, \texttt{prod}).\\
+\bottomrule
+\end{tabularx}
+\caption{Componentes principales.}
+\end{table}
+
+La aplicación se ejecuta en Docker como aplicación multicontenedor (API + PostgreSQL) mediante
+\texttt{docker compose}, y las pruebas pueden ejecutarse en un contenedor independiente sin necesidad
+de instalar Java ni Maven.
+
+% ===============================================================
+\section{Comportamiento esperado (definido antes de programar)}
+\label{sec:spec}
+% ===============================================================
+
+Antes de escribir código se definieron las reglas de negocio y una tabla de casos con su entrada y su
+resultado esperado. Este documento es el contrato que las pruebas verifican
+(\texttt{docs/ESPECIFICACION.md}).
+
+\subsection{Reglas de negocio}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{@{}l L@{}}
+\toprule
+\textbf{Id} & \textbf{Regla}\\
+\midrule
+R1 & Subtotal = suma de (cantidad $\times$ precio unitario) de cada ítem.\\
+R2 & El descuento es un porcentaje entre 0 y 100 y se aplica \textbf{una sola vez}, sobre el subtotal del pedido.\\
+R3 & Total = subtotal $-$ descuento. Nunca es negativo.\\
+R4 & Los valores se redondean a 2 decimales (HALF\_UP).\\
+R5 & Un pedido debe tener al menos un ítem; cantidad $> 0$; precio $\geq 0$.\\
+R6 & Un pedido solo se acepta si hay existencias suficientes de cada SKU (se suman las cantidades del mismo SKU).\\
+\bottomrule
+\end{tabularx}
+\caption{Reglas de negocio.}
+\end{table}
+
+\subsection{Casos esperados}
+
+\begin{longtable}{@{}l p{6.6cm} p{5.6cm}@{}}
+\toprule
+\textbf{Caso} & \textbf{Entrada} & \textbf{Resultado esperado}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Caso} & \textbf{Entrada} & \textbf{Resultado esperado}\\
+\midrule
+\endhead
+CP01 & $2 \times 10.000 + 3 \times 5.000$ & Subtotal 35.000\\
+CP02 & $3 \times 10.000$, descuento 0\,\% & Total 30.000,00\\
+CP03 & $1 \times 100.000$, descuento 10\,\% & Total 90.000,00\\
+\textbf{CP04} & $2 \times 50.000 + 3 \times 20.000$, descuento 10\,\% & \textbf{Total 144.000,00} (no 129.600)\\
+CP05 & $2 \times 10.000$, descuento 100\,\% & Total 0,00\\
+CP06 & Descuento 100,01\,\% & Error de validación\\
+CP07 & Descuento $-5$\,\% & Error de validación\\
+CP08 & $3 \times 3.333{,}33$, descuento 15\,\% & Total 8.499,99\\
+CP09 & Pedido sin ítems & Error de validación\\
+IN01 & Existencias 10, piden 4 & Hay existencias\\
+IN02 & Existencias 10, piden 10 & Hay existencias\\
+IN03 & Existencias 10, piden 11 & No hay existencias\\
+IN04 & SKU inexistente & No hay existencias\\
+IN05 & Descontar 3 de 10 & Quedan 7\\
+IN06 & Descontar 11 de 10 & Error; el inventario no cambia\\
+PS01 & Caso CP04 con existencias suficientes & Subtotal 160.000, descuento 16.000, total 144.000\\
+PS02 & Piden 6, existen 5 & Error de existencias\\
+PS03 & Mismo SKU en dos líneas (3 + 3), existen 5 & Error de existencias\\
+PS04 & Procesar un pedido & El inventario no cambia\\
+WE01--03 & \texttt{POST /api/orders/total} & 200 con total / 409 sin existencias / 400 datos inválidos\\
+\bottomrule
+\caption{Casos de prueba definidos antes de la implementación.}
+\end{longtable}
+
+% ===============================================================
+\section{Pruebas automatizadas}
+\label{sec:pruebas}
+% ===============================================================
+
+\subsection{Inventario de pruebas}
+
+Cada caso de la especificación tiene una prueba con el mismo identificador en su nombre, lo que
+permite trazar requisito $\rightarrow$ prueba $\rightarrow$ resultado.
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{@{}l L r@{}}
+\toprule
+\textbf{Clase de prueba} & \textbf{Qué verifica} & \textbf{Pruebas}\\
+\midrule
+\texttt{OrderCalculatorTest} & CP01--CP09: subtotal, descuento, redondeo y validaciones & 9\\
+\texttt{InventoryServiceTest} & IN01--IN06: existencias contra base de datos (H2) & 6\\
+\texttt{OrderServiceTest} & PS01--PS04: caso de uso completo de un pedido & 4\\
+\texttt{OrderControllerTest} & WE01--WE03: respuestas HTTP 200, 409 y 400 & 3\\
+\texttt{OpenApiDocumentationTest} & Contrato OpenAPI y disponibilidad de Swagger UI & 2\\
+\texttt{OrdersApplicationTests} & La aplicación arranca correctamente & 1\\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Total}} & \textbf{25}\\
+\bottomrule
+\end{tabularx}
+\caption{Pruebas automáticas por clase.}
+\end{table}
+
+\subsection{Ejecución con un solo comando}
+
+Con Java 21 y Maven instalados:
+
+\begin{lstlisting}[language=shell]
+mvn test
+\end{lstlisting}
+
+Sin instalar Java ni Maven, dentro de un contenedor Docker (guarda además la salida con fecha en
+\texttt{evidencias/05\_docker\_tests.txt}):
+
+\begin{lstlisting}[language=shell]
+./scripts/evidencias.sh docker
+\end{lstlisting}
+
+Las pruebas también se ejecutan automáticamente en GitHub Actions en cada \emph{push} y en cada
+\emph{pull request} (\texttt{.github/workflows/ci.yml}).
+
+\subsection{Resultado}
+
+Ejecución del 8 de noviembre de 2026 en contenedor (Docker Desktop, contexto \texttt{desktop-linux}):
+
+\begin{lstlisting}
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+\end{lstlisting}
+
+% ===============================================================
+\section{Prueba que reproduce el error de descuentos del caso}
+\label{sec:cp04}
+% ===============================================================
+
+El error del caso consiste en aplicar el descuento \emph{dos veces} al mismo pedido. Con el pedido
+del caso CP04 la diferencia es:
+
+\begin{align*}
+\text{Subtotal} &= 2 \times 50.000 + 3 \times 20.000 = 160.000\\
+\text{Total correcto (descuento una vez)} &= 160.000 \times (1 - 0{,}10) = 144.000\\
+\text{Total con el error (descuento dos veces)} &= 160.000 \times (1 - 0{,}10)^2 = 129.600
+\end{align*}
+
+Es decir, el error regala 14.400 adicionales (9\,\% del subtotal) en un solo pedido. La prueba fija
+el valor correcto y, explícitamente, rechaza el valor que produce el defecto:
+
+\begin{lstlisting}[language=Java]
+@Test
+void CP04_discountIsNotAppliedTwiceToTheSameOrder_reproducesCaseBug() {
+    List<OrderItem> items = List.of(item("RICE", 2, "50000"), item("OIL", 3, "20000"));
+    // subtotal = 160000 ; 10 % = 16000 ; correct total = 144000
+
+    BigDecimal total = calculator.calculateTotal(items, new BigDecimal("10"));
+
+    assertThat(total).isEqualByComparingTo("144000.00");
+    // Result produced by the defect (double discount): 129600
+    assertThat(total).isNotEqualByComparingTo("129600.00");
+}
+\end{lstlisting}
+
+Si alguien vuelve a introducir el doble descuento (por ejemplo, aplicándolo por ítem y luego sobre el
+total), esta prueba falla en el siguiente \texttt{mvn test} y el pipeline de integración continua
+bloquea el cambio antes de que llegue a producción. El mismo escenario se verifica de extremo a
+extremo en \texttt{PS01} (caso de uso) y \texttt{WE01} (API REST).
+
+% ===============================================================
+\section{Desarrollo guiado por pruebas y limitación del historial}
+\label{sec:tdd}
+% ===============================================================
+
+\subsection{Proceso seguido}
+
+El trabajo siguió el orden del desarrollo guiado por pruebas (TDD):
+
+\begin{enumerate}[noitemsep]
+  \item Se definió el comportamiento esperado: reglas R1--R6 y la tabla de casos con entradas y
+        resultados (\texttt{docs/ESPECIFICACION.md}).
+  \item Se escribieron las pruebas a partir de esa tabla, por ejemplo
+        \texttt{OrderCalculatorTest} e \texttt{InventoryServiceTest}. Al no existir aún la implementación, las pruebas
+        fallaban (fase \emph{roja}).
+  \item Se escribió el código mínimo que las hace pasar (fase \emph{verde}): la calculadora
+        (\texttt{OrderCalculator}), el servicio de existencias, el caso de uso y los controladores.
+  \item Se mejoró el código manteniendo todas las pruebas en verde (refactorización).
+\end{enumerate}
+
+Esta trazabilidad queda reflejada en el propio código: cada prueba lleva el identificador del caso de
+la especificación (CP01, IN03, PS02, \ldots), y la clase \texttt{OrderCalculatorTest} documenta que fue
+escrita antes de la implementación.
+
+\subsection{Limitación: el historial de Git no refleja ese orden}
+
+La guía del equipo (\texttt{docs/GUIA\_GIT\_Y\_EVIDENCIAS.md}) planificaba subir primero la
+especificación, después las pruebas (\emph{rojo}) y luego la implementación (\emph{verde}) en commits
+separados, de forma que el historial demostrara el orden. Sin embargo, el proyecto se publicó en el
+repositorio remoto en \textbf{un único commit} (\texttt{359db62}, ``add project to remote
+repository''), que contiene especificación, pruebas y código a la vez. Por eso el historial de Git
+\textbf{no permite verificar} por sí solo que las pruebas se escribieron antes que el código.
+
+Se decidió \textbf{no reescribir el historial} de la rama principal: ya está publicada y es compartida
+por el equipo, y reescribirla exigiría un \emph{force-push} que podría hacer perder trabajo de otros
+integrantes. En su lugar, se deja constancia aquí de la limitación. La evidencia disponible del orden
+de trabajo es:
+
+\begin{itemize}[noitemsep]
+  \item La especificación con entradas y resultados esperados, independiente del código.
+  \item La correspondencia uno a uno entre los casos de la especificación y los nombres de las pruebas.
+  \item La prueba \texttt{CP04}, construida a partir del error descrito en el caso y no a partir de la
+        implementación.
+\end{itemize}
+
+Como lección aprendida, en las siguientes entregas cada cambio se trabajará en una rama propia
+(\texttt{feature/*}, como ya se hizo con \texttt{feature/docker}) y las pruebas se subirán en un
+commit anterior al de la implementación.
+
+% ===============================================================
+\section{Por qué la automatización reduce costo y tiempo}
+\label{sec:costos}
+% ===============================================================
+
+\subsection{Revisión manual mensual frente a pruebas automáticas}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{@{}l L L@{}}
+\toprule
+\textbf{Aspecto} & \textbf{Revisión manual mensual} & \textbf{Pruebas automáticas}\\
+\midrule
+Momento de detección & Hasta 30 días después de que el error entra en producción & Minutos después del cambio, antes de llegar a producción\\
+Duración de una revisión & Horas o días de una persona revisando pedidos y totales & Segundos: 25 pruebas en una sola ejecución\\
+Costo por revisión & Se paga cada mes en horas de personal & Casi nulo tras escribir la prueba una vez\\
+Cobertura & Una muestra de pedidos; depende de la atención del revisor & Los mismos casos, completos, en cada ejecución\\
+Repetibilidad & Varía según la persona y el día & Idéntica cada vez; resultado objetivo (pasa / falla)\\
+Errores que vuelven & Pueden reaparecer sin que nadie lo note & \texttt{CP04} impide que el doble descuento regrese\\
+Evidencia & Informes manuales & Historial de ejecuciones en el pipeline de CI\\
+\bottomrule
+\end{tabularx}
+\caption{Comparación entre la revisión manual mensual y las pruebas automáticas.}
+\end{table}
+
+\subsection{Costo de un error que se detecta tarde}
+
+El costo de un defecto como el del caso crece con el tiempo que permanece sin detectar. De forma
+general:
+
+\[
+\text{Pérdida} \approx P \times d \times \bar{s} \times e
+\]
+
+donde $P$ es el número de pedidos con descuento por día, $d$ los días hasta que se detecta el error,
+$\bar{s}$ el subtotal promedio de esos pedidos y $e$ la fracción perdida por pedido (9\,\% del
+subtotal en el caso del doble descuento del 10\,\%).
+
+Con revisión mensual, $d$ puede llegar a 30 días; con pruebas automáticas, el error no llega a
+producción y $d \approx 0$. Por ejemplo, \emph{con valores ilustrativos} de 50 pedidos con descuento
+al día y un subtotal promedio de 160.000, la pérdida en 30 días sería
+$50 \times 30 \times 160.000 \times 0{,}09 = 21.600.000$, frente a cero si la prueba bloquea el cambio.
+\textit{(Reemplazar por las cifras reales de la empresa si el caso las proporciona.)}
+
+\subsection{Razones para esta empresa}
+
+\begin{enumerate}
+  \item \textbf{El error se detecta antes de que llegue a los clientes.} Cada \emph{push} ejecuta las
+        pruebas en GitHub Actions; un cambio que rompe el cálculo del descuento no se integra.
+  \item \textbf{Se elimina el costo recurrente de la revisión.} Las horas que hoy se dedican cada mes
+        a revisar a mano pedidos y existencias pueden dedicarse a otras tareas; escribir la prueba
+        cuesta una sola vez.
+  \item \textbf{Se reduce el costo de corregir.} Un error detectado minutos después de escribirlo se
+        corrige en el mismo momento, por la persona que lo introdujo y con el contexto fresco. Uno
+        detectado un mes después exige rastrear qué cambió, corregir pedidos ya facturados y, a veces,
+        dar explicaciones a los clientes.
+  \item \textbf{La verificación es completa y objetiva.} Las pruebas comprueban siempre todos los
+        casos definidos (descuentos, redondeo, límites, existencias) en lugar de una muestra, y no
+        dependen del cansancio o la experiencia del revisor.
+  \item \textbf{Permite cambiar el sistema con confianza.} La cadena puede agregar nuevas promociones
+        o tiendas: si un cambio afecta un comportamiento existente, una prueba lo señala de inmediato.
+  \item \textbf{Las existencias también se protegen.} Las pruebas IN01--IN06 y PS02--PS03 evitan que
+        se acepten pedidos sin inventario suficiente, lo que evitaría despachos fallidos y clientes
+        insatisfechos.
+\end{enumerate}
+
+% ===============================================================
+\section{Conclusiones}
+% ===============================================================
+
+\begin{itemize}
+  \item La aplicación cubre el cálculo del total con descuentos y la validación de existencias contra
+        una base de datos, con 25 pruebas automáticas que pasan y se ejecutan con un solo comando.
+  \item La prueba \texttt{CP04} reproduce el error de doble descuento del caso y garantiza que no vuelva
+        a producción.
+  \item El comportamiento se definió primero en una especificación con entradas y resultados
+        esperados; el historial de Git no refleja el orden pruebas-antes-que-código, y se documenta
+        esa limitación en lugar de ocultarla.
+  \item Frente a la revisión manual mensual, la automatización detecta los errores en minutos en vez
+        de semanas, elimina un costo recurrente y ofrece una verificación completa y repetible.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,300 @@
+=== 2026-11-23 22:02:02 -05 | docker compose -f jenkins/docker-compose.yml up -d --build (rama feature/jenkins-portable) ===
+ Image jenkins-docker-casc:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 675B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 786B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/jenkins/jenkins:2.541.3-jdk17
+#3 ...
+
+#4 [internal] load metadata for docker.io/library/maven:3.9-eclipse-temurin-21
+#4 DONE 0.6s
+
+#5 [internal] load metadata for docker.io/library/docker:29-cli
+#5 DONE 1.2s
+
+#6 [internal] load metadata for docker.io/library/eclipse-temurin:21-jdk
+#6 DONE 1.3s
+
+#3 [internal] load metadata for docker.io/jenkins/jenkins:2.541.3-jdk17
+#3 DONE 1.3s
+
+#7 [internal] load .dockerignore
+#7 transferring context: 2B done
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 1.93kB done
+#8 DONE 0.0s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 resolve docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d 0.0s done
+#9 ...
+
+#10 FROM docker.io/library/maven:3.9-eclipse-temurin-21@sha256:99e61abcff91a9b1333463bd8451fb18495d6eba9250ac66a338b518f8278320
+#10 resolve docker.io/library/maven:3.9-eclipse-temurin-21@sha256:99e61abcff91a9b1333463bd8451fb18495d6eba9250ac66a338b518f8278320 0.0s done
+#10 CACHED
+
+#11 FROM docker.io/library/eclipse-temurin:21-jdk@sha256:8ad118b146aa92da815b576441acd6b42b38236797ad0b6edc8c200b85bb0734
+#11 resolve docker.io/library/eclipse-temurin:21-jdk@sha256:8ad118b146aa92da815b576441acd6b42b38236797ad0b6edc8c200b85bb0734 0.0s done
+#11 DONE 0.2s
+
+#12 FROM docker.io/library/docker:29-cli@sha256:34507eb5069d8be82c95dd3b6987d4250fd5fee49b82e2509b7d7a7030740d6d
+#12 resolve docker.io/library/docker:29-cli@sha256:34507eb5069d8be82c95dd3b6987d4250fd5fee49b82e2509b7d7a7030740d6d 0.0s done
+#12 DONE 0.4s
+
+#11 FROM docker.io/library/eclipse-temurin:21-jdk@sha256:8ad118b146aa92da815b576441acd6b42b38236797ad0b6edc8c200b85bb0734
+#11 sha256:7a1656eb72f99b8a72f322801bd1f1e685ad2a953a873c28e91131878743c119 2.46kB / 2.46kB 0.1s done
+#11 sha256:a52c47a9390d78dda3614f9b943907fc983e397108c6f10b813c88b8f1796a4d 159B / 159B 0.2s done
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 0B / 158.45MB 0.2s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 0B / 30.37MB 0.2s
+#11 sha256:96aae9022e0e1b310a415e7c2ff1b435d853e8eabb2711cc70f4ad4010cc81b7 0B / 389B 0.2s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 0B / 42.17MB 0.2s
+#11 sha256:96aae9022e0e1b310a415e7c2ff1b435d853e8eabb2711cc70f4ad4010cc81b7 389B / 389B 0.3s done
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 11.53MB / 158.45MB 0.8s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 2.10MB / 30.37MB 0.8s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 3.15MB / 42.17MB 0.6s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 19.92MB / 158.45MB 0.9s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 8.39MB / 42.17MB 0.8s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 30.41MB / 158.45MB 1.1s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 7.34MB / 30.37MB 1.1s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 12.58MB / 42.17MB 0.9s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 9.44MB / 30.37MB 1.2s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 17.83MB / 42.17MB 1.1s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 44.04MB / 158.45MB 1.4s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 22.02MB / 42.17MB 1.2s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 55.57MB / 158.45MB 1.5s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 12.58MB / 30.37MB 1.5s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 27.26MB / 42.17MB 1.4s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 65.01MB / 158.45MB 1.7s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 14.68MB / 30.37MB 1.7s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 33.55MB / 42.17MB 1.5s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 17.83MB / 30.37MB 1.8s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 37.75MB / 42.17MB 1.7s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 77.59MB / 158.45MB 2.0s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 22.02MB / 30.37MB 2.0s
+#11 sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 42.17MB / 42.17MB 1.8s done
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 95.42MB / 158.45MB 2.1s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 24.12MB / 30.37MB 2.1s
+#11 extracting sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 106.95MB / 158.45MB 2.6s
+#11 sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 30.37MB / 30.37MB 2.6s done
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 117.44MB / 158.45MB 2.7s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 135.27MB / 158.45MB 2.9s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 158.45MB / 158.45MB 3.2s
+#11 sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 158.45MB / 158.45MB 3.3s done
+#11 ...
+
+#12 FROM docker.io/library/docker:29-cli@sha256:34507eb5069d8be82c95dd3b6987d4250fd5fee49b82e2509b7d7a7030740d6d
+#12 sha256:c01e603afa82e4efad14023ceb43cadf17cb6a08959f5f2c18bdd255a5aa496c 116B / 116B 0.1s done
+#12 sha256:d5681b4d7626a8b0d7b9066981d202e5f20d050e00c4c24fd519758c39a0f25f 1.01kB / 1.01kB 0.2s done
+#12 sha256:c0f0ba247ae413d7b55d59b35cf0540d69122ad65d406a6529ec2382529a9d70 541B / 541B 0.2s done
+#12 sha256:dd5c7ebbff8d68bf90435a2b0b9a8f973c70dbb8c148c0893737676a86a9191a 11.84MB / 11.84MB 1.1s done
+#12 sha256:a5da4a42f190109f0608bc941203b2be5310dfe2faaec4384540bfc9f65a9b8b 24.05MB / 24.05MB 0.7s done
+#12 sha256:554970c1d0af3cd775c70b87c84fee84ada826fa8a9977be83db364107190a8f 11.26MB / 11.26MB 0.5s done
+#12 sha256:80a1fa15fb8091ef57c003f3a74d5b1a2881eaf8dc9015c4058d9ce8494dba36 456B / 456B 0.4s done
+#12 sha256:e79a20f65ccf189ed5468fc14879b7e4a212427dd4efeb2efca0c320a8c2cf3a 8.20MB / 8.20MB 0.2s done
+#12 extracting sha256:e79a20f65ccf189ed5468fc14879b7e4a212427dd4efeb2efca0c320a8c2cf3a 0.2s done
+#12 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 0.0s done
+#12 DONE 3.7s
+
+#11 FROM docker.io/library/eclipse-temurin:21-jdk@sha256:8ad118b146aa92da815b576441acd6b42b38236797ad0b6edc8c200b85bb0734
+#11 extracting sha256:517b871c26eac1b24d47992388bcc20e2afba3643a89e8c4a3921bfa5e1d1d28 1.6s done
+#11 DONE 3.8s
+
+#12 FROM docker.io/library/docker:29-cli@sha256:34507eb5069d8be82c95dd3b6987d4250fd5fee49b82e2509b7d7a7030740d6d
+#12 extracting sha256:80a1fa15fb8091ef57c003f3a74d5b1a2881eaf8dc9015c4058d9ce8494dba36 0.0s done
+#12 extracting sha256:554970c1d0af3cd775c70b87c84fee84ada826fa8a9977be83db364107190a8f
+#12 extracting sha256:554970c1d0af3cd775c70b87c84fee84ada826fa8a9977be83db364107190a8f 0.1s done
+#12 extracting sha256:a5da4a42f190109f0608bc941203b2be5310dfe2faaec4384540bfc9f65a9b8b
+#12 extracting sha256:a5da4a42f190109f0608bc941203b2be5310dfe2faaec4384540bfc9f65a9b8b 0.5s done
+#12 extracting sha256:dd5c7ebbff8d68bf90435a2b0b9a8f973c70dbb8c148c0893737676a86a9191a
+#12 extracting sha256:dd5c7ebbff8d68bf90435a2b0b9a8f973c70dbb8c148c0893737676a86a9191a 0.2s done
+#12 extracting sha256:c0f0ba247ae413d7b55d59b35cf0540d69122ad65d406a6529ec2382529a9d70 0.0s done
+#12 extracting sha256:d5681b4d7626a8b0d7b9066981d202e5f20d050e00c4c24fd519758c39a0f25f 0.0s done
+#12 DONE 4.7s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 sha256:0b9e958129f491a791906f3489da0ef6d73fe8ecd6ab244ea86efb9457c2d54c 390B / 390B 0.5s done
+#9 sha256:76eac8d3a597602036983ad5cada2c3613afad9dc2fa490e84a947a144c403f6 1.29kB / 1.29kB 0.2s done
+#9 sha256:46f93bf1cb2f067a8ec6d24c4b031184bd91f301ead522c1b3f794bfdd80695d 2.23kB / 2.23kB 0.2s done
+#9 sha256:f44eb945cec15a8e99f05c57ab9eb0409727b58a87a5034ac8bb3b68eb1e8a5f 69.21MB / 96.12MB 1.4s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 17.83MB / 63.45MB 1.2s
+#9 sha256:b7b154fd69a136b640d89d7c156048a48fe4124b7638ed13107df72b132fabb3 3.15MB / 6.29MB 1.1s
+#9 sha256:01938f7c040b559dfd1d16346f9bbd40a305e214e2e16728dcf3ac75845c020f 187B / 187B 0.5s done
+#9 sha256:6327a7366a6fa4c5c57a9a04274db866841098e717655c7e56d4f67e3cc915a0 184B / 184B 0.5s done
+#9 ...
+
+#12 FROM docker.io/library/docker:29-cli@sha256:34507eb5069d8be82c95dd3b6987d4250fd5fee49b82e2509b7d7a7030740d6d
+#12 extracting sha256:c01e603afa82e4efad14023ceb43cadf17cb6a08959f5f2c18bdd255a5aa496c 0.0s done
+#12 DONE 4.7s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 sha256:f44eb945cec15a8e99f05c57ab9eb0409727b58a87a5034ac8bb3b68eb1e8a5f 82.84MB / 96.12MB 1.5s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 24.12MB / 63.45MB 1.5s
+#9 sha256:6da7907f70f4c563d02439f2a3a5b3f951e74cfa0ac6633e39e945ec0f10b2ef 1.23kB / 1.23kB 0.1s done
+#9 ...
+
+#11 FROM docker.io/library/eclipse-temurin:21-jdk@sha256:8ad118b146aa92da815b576441acd6b42b38236797ad0b6edc8c200b85bb0734
+#11 extracting sha256:96aae9022e0e1b310a415e7c2ff1b435d853e8eabb2711cc70f4ad4010cc81b7 0.0s done
+#11 extracting sha256:7964e5268394e2ab8baf230ff8dc092d03c04653044d1f757d233d1ccc97b8e9 1.1s done
+#11 DONE 4.9s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 sha256:f44eb945cec15a8e99f05c57ab9eb0409727b58a87a5034ac8bb3b68eb1e8a5f 96.12MB / 96.12MB 1.7s
+#9 sha256:b7b154fd69a136b640d89d7c156048a48fe4124b7638ed13107df72b132fabb3 4.19MB / 6.29MB 1.4s
+#9 sha256:69503609dc016576a481fcb3d3a9113b0a266becbab919ba239c3a929a9a39ac 0B / 5.24MB 0.2s
+#9 sha256:f44eb945cec15a8e99f05c57ab9eb0409727b58a87a5034ac8bb3b68eb1e8a5f 96.12MB / 96.12MB 1.7s done
+#9 sha256:b7b154fd69a136b640d89d7c156048a48fe4124b7638ed13107df72b132fabb3 5.24MB / 6.29MB 1.5s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 0B / 59.45MB 0.2s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 16.78MB / 59.45MB 0.3s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 19.92MB / 59.45MB 0.5s
+#9 ...
+
+#11 FROM docker.io/library/eclipse-temurin:21-jdk@sha256:8ad118b146aa92da815b576441acd6b42b38236797ad0b6edc8c200b85bb0734
+#11 extracting sha256:0eba11033ba7dd8c58b6076f234d857a445263bb488fd4d1d152b306e2f7c4fb 1.1s done
+#11 extracting sha256:a52c47a9390d78dda3614f9b943907fc983e397108c6f10b813c88b8f1796a4d 0.0s done
+#11 extracting sha256:7a1656eb72f99b8a72f322801bd1f1e685ad2a953a873c28e91131878743c119 0.0s done
+#11 DONE 6.1s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 sha256:b7b154fd69a136b640d89d7c156048a48fe4124b7638ed13107df72b132fabb3 6.29MB / 6.29MB 4.1s done
+#9 sha256:69503609dc016576a481fcb3d3a9113b0a266becbab919ba239c3a929a9a39ac 1.05MB / 5.24MB 3.0s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 0B / 49.29MB 0.2s
+#9 sha256:69503609dc016576a481fcb3d3a9113b0a266becbab919ba239c3a929a9a39ac 2.10MB / 5.24MB 3.3s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 28.31MB / 63.45MB 4.8s
+#9 sha256:69503609dc016576a481fcb3d3a9113b0a266becbab919ba239c3a929a9a39ac 3.15MB / 5.24MB 3.5s
+#9 sha256:69503609dc016576a481fcb3d3a9113b0a266becbab919ba239c3a929a9a39ac 5.24MB / 5.24MB 3.6s done
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 23.07MB / 59.45MB 3.3s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 33.55MB / 63.45MB 5.1s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 5.24MB / 49.29MB 0.9s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 39.85MB / 63.45MB 5.3s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 28.31MB / 59.45MB 3.6s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 9.44MB / 49.29MB 1.1s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 48.23MB / 63.45MB 5.4s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 32.51MB / 59.45MB 3.8s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 12.58MB / 49.29MB 1.2s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 54.53MB / 63.45MB 5.6s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 37.75MB / 59.45MB 3.9s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 16.78MB / 49.29MB 1.4s
+#9 sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 63.45MB / 63.45MB 5.7s done
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 41.94MB / 59.45MB 4.1s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 23.07MB / 49.29MB 1.5s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 48.23MB / 59.45MB 4.2s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 33.55MB / 49.29MB 1.7s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 53.48MB / 59.45MB 4.4s
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 42.99MB / 49.29MB 1.8s
+#9 sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 59.45MB / 59.45MB 4.6s done
+#9 sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 49.29MB / 49.29MB 1.9s done
+#9 extracting sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392
+#9 extracting sha256:53c88f1dfeb79b2f207f7f1a03a45e0dc5ed208b9f496de16b98f81189dc0392 1.2s done
+#9 DONE 10.7s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 extracting sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7
+#9 extracting sha256:4d2125ccf71c16701fc6961afb46ecd20e7a612e4f9225c668f8fbbf407daef7 1.2s done
+#9 DONE 11.9s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 extracting sha256:69503609dc016576a481fcb3d3a9113b0a266becbab919ba239c3a929a9a39ac 0.1s done
+#9 extracting sha256:6da7907f70f4c563d02439f2a3a5b3f951e74cfa0ac6633e39e945ec0f10b2ef 0.0s done
+#9 extracting sha256:6327a7366a6fa4c5c57a9a04274db866841098e717655c7e56d4f67e3cc915a0 0.0s done
+#9 extracting sha256:01938f7c040b559dfd1d16346f9bbd40a305e214e2e16728dcf3ac75845c020f 0.0s done
+#9 extracting sha256:b7b154fd69a136b640d89d7c156048a48fe4124b7638ed13107df72b132fabb3 0.0s done
+#9 DONE 12.0s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 extracting sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d
+#9 extracting sha256:503dee4523cf2a85871da0a64cab0e94ce91aa6793ece0cda497c41881870f2d 0.5s done
+#9 DONE 12.5s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 extracting sha256:f44eb945cec15a8e99f05c57ab9eb0409727b58a87a5034ac8bb3b68eb1e8a5f
+#9 extracting sha256:f44eb945cec15a8e99f05c57ab9eb0409727b58a87a5034ac8bb3b68eb1e8a5f 0.3s done
+#9 DONE 12.8s
+
+#9 [stage-0 1/7] FROM docker.io/jenkins/jenkins:2.541.3-jdk17@sha256:cce1eeb79902722f3cf7a8831c41e95c39f4a42b9a2981959630cc66539b3c2d
+#9 extracting sha256:46f93bf1cb2f067a8ec6d24c4b031184bd91f301ead522c1b3f794bfdd80695d 0.0s done
+#9 extracting sha256:76eac8d3a597602036983ad5cada2c3613afad9dc2fa490e84a947a144c403f6 0.0s done
+#9 extracting sha256:0b9e958129f491a791906f3489da0ef6d73fe8ecd6ab244ea86efb9457c2d54c 0.0s done
+#9 DONE 12.8s
+
+#13 [stage-0 2/7] COPY --from=eclipse-temurin:21-jdk /opt/java/openjdk /opt/jdk21
+#13 DONE 1.2s
+
+#14 [stage-0 3/7] COPY --from=maven:3.9-eclipse-temurin-21 /usr/share/maven /usr/share/maven
+#14 DONE 0.1s
+
+#15 [stage-0 4/7] COPY --from=docker:29-cli /usr/local/bin/docker /usr/bin/docker
+#15 DONE 0.1s
+
+#16 [stage-0 5/7] COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+#16 DONE 0.0s
+
+#17 [stage-0 6/7] RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt --jenkins-version 2.541.3
+#17 16.86 
+#17 16.86 Security warnings:
+#17 16.86 workflow-multibranch (841.vec5b_9e1806ec): SECURITY-3729 Exposure of System-scoped credentials https://www.jenkins.io/security/advisory/2026-09-16/#SECURITY-3729
+#17 16.86 pipeline-groovy-lib (798.v5cc688825312): SECURITY-3815 CSRF vulnerability https://www.jenkins.io/security/advisory/2026-09-02/#SECURITY-3815
+#17 16.86 pipeline-groovy-lib (798.v5cc688825312): SECURITY-3796 Path traversal vulnerability https://www.jenkins.io/security/advisory/2026-09-16/#SECURITY-3796
+#17 22.09 Done
+#17 DONE 22.2s
+
+#18 [stage-0 7/7] COPY jenkins.yaml /var/jenkins_casc/jenkins.yaml
+#18 DONE 0.0s
+
+#19 exporting to image
+#19 exporting layers
+#19 exporting layers 7.2s done
+#19 exporting manifest sha256:61fc3dccc215688f3c2b2e83abf3cf8a523a6a832bba01917f2fa826f79f1424 done
+#19 exporting config sha256:8f340efa3697a250820cab85f835795f36264ba265e150240769a6ae94ab7e98 done
+#19 exporting attestation manifest sha256:380583a3ac497c12710c611e0e1886694cd3c77cb8736b3ebb8a3b102d1efaa9 0.0s done
+#19 exporting manifest list sha256:76e9924298e457eddd043b6459d276fcb1ab944dbc730a6b04d03fcb17cb0802 done
+#19 naming to docker.io/library/jenkins-docker-casc:local done
+#19 unpacking to docker.io/library/jenkins-docker-casc:local
+#19 unpacking to docker.io/library/jenkins-docker-casc:local 4.3s done
+#19 DONE 11.6s
+
+#20 resolving provenance for metadata file
+#20 DONE 0.0s
+ Image jenkins-docker-casc:local Built 
+ Network pedidos-ci-jenkins_default Creating 
+ Network pedidos-ci-jenkins_default Creating 
+ Volume jenkins_home Creating 
+ Volume jenkins_home Creating 
+ Volume jenkins_home Created 
+ Volume jenkins_home Created 
+ Network pedidos-ci-jenkins_default Created 
+ Network pedidos-ci-jenkins_default Created 
+ Container jenkins Creating 
+ Container jenkins Created 
+ Container jenkins Starting 
+ Container jenkins Started 
+EXIT=0
+
+=== 2026-11-23 22:03:12 -05 | Recreacion con --env-file .env (group_add no tomaba DOCKER_GID del .env de la raiz) ===
+Antes: groups=1000(jenkins),984 -> permission denied en /var/run/docker.sock
+ Container jenkins Recreate 
+ Container jenkins Recreated 
+ Container jenkins Starting 
+ Container jenkins Started 
+--- herramientas dentro del contenedor
+uid=1000(jenkins) gid=1000(jenkins) groups=1000(jenkins),0(root)
+openjdk version "21.0.13.1" 2026-11-17 LTS
+Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)
+Docker version 29.10.0, build fdd4b8e
+server 29.9.2
+--- JCasC
+2026-11-24 03:03:19.074+0000 [id=41]	INFO	j.j.plugin.JenkinsJobManagement#createOrUpdateConfig: createOrUpdateConfig for integracion-continua-backend-orders-ci
+2026-11-24 03:03:19.239+0000 [id=24]	INFO	hudson.lifecycle.Lifecycle#onReady: Jenkins is fully up and running
+
+=== 2026-11-23 22:15:00 -05 | Reconstruccion con plugin buildx (la ejecucion #1 uso el legacy builder) ===
+ Container jenkins Recreate 
+ Container jenkins Recreated 
+ Container jenkins Starting 
+ Container jenkins Started 
+github.com/docker/buildx v0.39.0 360040a78d6113dc84e5d4dcdf0f438e1be7a41f

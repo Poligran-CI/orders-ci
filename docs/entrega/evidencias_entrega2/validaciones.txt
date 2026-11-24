@@ -1,0 +1,14 @@
+=== 2026-11-23 21:25:32 -05 | validaciones de configuracion (commit ee13139) ===
+jenkins/jenkins.yaml YAML OK, claves: ['jenkins', 'unclassified', 'credentials', 'tool', 'jobs']
+jenkins/docker-compose.yml YAML OK, claves: ['name', 'services', 'volumes']
+docker-compose.yml YAML OK, claves: ['services', 'volumes']
+.github/workflows/ci.yml YAML OK, claves: ['name', 'True', 'jobs']
+docker compose -f jenkins/docker-compose.yml config --quiet: OK
+rama por defecto en GitHub: master
+disparador push en master/.github/workflows/ci.yml:
+on:
+  push:
+    branches: [main]
+  pull_request:
+consulta de webhooks (GET /repos/.../hooks):
+gh: This API operation needs the "admin:repo_hook" scope. To request it, run:  gh auth refresh -h github.com -s admin:repo_hook
