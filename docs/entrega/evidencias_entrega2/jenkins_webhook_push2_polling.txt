@@ -1,0 +1,14 @@
+Started on Nov 24, 2026, 4:24:00 AM
+Started by event from 140.82.115.173:50206 → 140.82.115.173 ⇒ https://localhost:8080/github-webhook/ on Tue Nov 24 04:24:00 UTC 2026
+Using strategy: Default
+[poll] Last Built Revision: Revision 5a76d6c39c818757eccd5b787b45fa429902426b (refs/remotes/origin/feature/jenkins-portable)
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git ls-remote -h -- https://github.com/Poligran-CI/orders-ci # timeout=10
+Found 11 remote heads on https://github.com/Poligran-CI/orders-ci
+[poll] Latest remote head revision on refs/heads/feature/jenkins-portable is: b67c6a1a8f45d06c52f04b7466cf38b6f9eef255
+Done. Took 0.46 sec
+Changes found

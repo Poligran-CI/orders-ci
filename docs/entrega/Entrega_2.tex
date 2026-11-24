@@ -102,7 +102,7 @@
 \newcommand{\integrantes}{%
   Integrante A \\ Integrante B \\ Integrante C \\ Integrante D}
 \newcommand{\docente}{Nombre del docente}
-\newcommand{\repositorio}{\url{https://github.com/Velasquez076/orders-ci}}
+\newcommand{\repositorio}{\url{https://github.com/Poligran-CI/orders-ci}}
 
 \title{\textbf{\entrega}\\[4pt]\large \entregasub\\[2pt]
 \normalsize Cálculo del total de pedidos con descuentos y validación de existencias\\[2pt]
@@ -533,7 +533,8 @@ completo. El \textbf{frontend} se encuentra en desarrollo en la rama \texttt{fea
 no está integrado en \texttt{master} y \textbf{no tiene Jenkinsfile}; su única automatización
 existente es un job de GitHub Actions (sección~\ref{sec:pipeline-front}). Para obtener evidencia
 directa, además, se ejecutó Jenkins en una rama nueva, \texttt{feature/jenkins-portable}, con los
-ajustes mínimos para que la instalación sea portable (sección~\ref{sec:jenkins-local}).
+ajustes mínimos para que la instalación sea portable, y se activó el \emph{webhook} de GitHub
+(sección~\ref{sec:jenkins-local}).
 
 % ===============================================================
 \section{Arquitectura general de integración continua}
@@ -549,7 +550,8 @@ ajustes mínimos para que la instalación sea portable (sección~\ref{sec:jenkin
 \toprule
 \textbf{Componente} & \textbf{Implementación real} & \textbf{Papel en la integración continua}\\
 \midrule
-GitHub & Repositorio público \texttt{Velasquez076/orders-ci}; rama por defecto \texttt{master};
+GitHub & Repositorio público \texttt{Poligran-CI/orders-ci} (la URL anterior,
+\texttt{Velasquez076/orders-ci}, redirige a esta); rama por defecto \texttt{master};
 ramas \texttt{develop}, \texttt{feature/*}, \texttt{release/*} y \texttt{staging} &
 Fuente de verdad del código, del \texttt{Jenkinsfile} y de la configuración de Jenkins.\\
 Jenkins & Contenedor \texttt{jenkins} (imagen \texttt{jenkins-docker-casc:local}, basada en
@@ -595,7 +597,7 @@ anfitrión.
 ]
 % Columna izquierda: GitHub
 \node[box=4.0cm, fill=white] (dev) at (0,0) {\textbf{Equipo de desarrollo}\\\texttt{git push} / \emph{pull request}};
-\node[box=4.0cm, fill=dggit] (repo) at (0,-2.3) {\textbf{Repositorio GitHub}\\\texttt{Velasquez076/orders-ci}\\
+\node[box=4.0cm, fill=dggit] (repo) at (0,-2.3) {\textbf{Repositorio GitHub}\\\texttt{Poligran-CI/orders-ci}\\
   \texttt{master}, \texttt{develop}, \texttt{feature/*}, \texttt{release/*}};
 \node[box=4.0cm, fill=dggit] (gha) at (0,-4.6) {\textbf{GitHub Actions}\\\texttt{ci.yml}: job \texttt{tests}
   (\texttt{mvn -B test})\\ejecutores \texttt{ubuntu-latest}};
@@ -621,14 +623,15 @@ anfitrión.
 \draw[arr] (dev) -- (repo);
 \draw[arr] (repo) -- node[lbl]{\emph{pull request}} (gha);
 \draw[arr] ($(jenkins.west)+(0,0.28)$) -- node[lbl, above=1pt]{\texttt{pollSCM H/2 * * * *}\\consulta cada $\sim$2 min} ($(repo.east)+(0,0.28)$);
-\draw[opt] ($(repo.east)+(0,-0.28)$) -- node[lbl, below=1pt]{\emph{webhook} \texttt{githubPush()}\\(opcional, inactivo)} ($(jenkins.west)+(0,-0.28)$);
+\draw[opt] ($(repo.east)+(0,-0.28)$) -- node[lbl, below=1pt]{\emph{webhook} \texttt{githubPush()}\\vía \texttt{smee.io} (rama portable)} ($(jenkins.west)+(0,-0.28)$);
 \draw[arr] (jenkins) -- node[lbl]{persistencia} (vol);
 \draw[arr] (jenkins) -- node[lbl]{\texttt{tools}} (mounts);
 \draw[arr] (mounts) -- node[lbl]{\texttt{docker build}} (engine);
 \draw[arr, dotted] (engine) -- node[lbl]{mismo \texttt{Dockerfile},\\otra etiqueta} (app);
 \end{tikzpicture}
 \caption{Arquitectura de integración continua implementada en \texttt{orders-ci}. Las líneas
-discontinuas representan el modo \emph{webhook}, configurado como alternativa pero no activo.}
+discontinuas representan el modo \emph{webhook}, alternativo al \emph{polling}; se activó en la
+rama \texttt{feature/jenkins-portable} (sección~\ref{sec:webhook-real}).}
 \label{fig:arquitectura}
 \end{figure}
 
@@ -949,6 +952,7 @@ vista no está disponible, y la visualización de etapas la ofrece \texttt{pipel
 \texttt{JENKINS\_ADMIN\_PASSWORD} & \texttt{.env} & JCasC: contraseña del usuario \texttt{admin} & Sí\\
 \texttt{GITHUB\_TOKEN} & \texttt{.env} & JCasC: credencial \texttt{github-token} (\emph{Secret text}) & Sí\\
 \texttt{USE\_GITHUB\_WEBHOOK} & \texttt{.env} & Job DSL: elige \texttt{githubPush()} o \texttt{pollSCM} & No\\
+\texttt{JENKINS\_BRANCH} & \texttt{.env} & Job DSL: rama construida (solo en \texttt{feature/jenkins-portable}; por defecto \texttt{*/master}) & No\\
 \texttt{JENKINS\_PUBLIC\_URL} & \texttt{.env} & JCasC: URL del servidor (\texttt{location.url}) & No\\
 \texttt{DOCKER\_GID} & \texttt{.env} & Compose: \texttt{group\_add} (requiere \texttt{--env-file}) & No\\
 \texttt{CASC\_JENKINS\_CONFIG} & Dockerfile y Compose & Ruta del archivo JCasC & No\\
@@ -999,6 +1003,11 @@ Los pipelines no pueden modificar las herramientas ni la configuración del serv
 Builds en el controlador & \texttt{agent any} sin agentes. & Jenkins desaconseja ejecutar builds en
 el nodo integrado \cite{jenkins-security}.\\
 Transporte & HTTP en \texttt{localhost}. & Sin TLS; suficiente mientras no se exponga el servidor.\\
+\emph{Webhook} (rama portable) & Reenvío con \texttt{smee.io}: el cliente local consulta el canal y
+entrega los eventos en \texttt{/github-webhook/}; la interfaz de Jenkins no se expone. & El
+\emph{webhook} no tiene secreto, por lo que Jenkins no valida la firma; quien conozca la URL del canal
+podría provocar una consulta del repositorio (no ejecuta código arbitrario). Debe añadirse un
+secreto.\\
 Protección CSRF & Por defecto en Jenkins (\emph{crumb}); el informe del equipo la usa para
 disparar builds por API. & Sin cambios.\\
 \bottomrule
@@ -1290,8 +1299,9 @@ Ese job se ejecutó con éxito en GitHub Actions el 10 de noviembre de 2026
 \subsection{Conexión con el repositorio}
 
 Jenkins se conecta con GitHub mediante el plugin \texttt{git}, por HTTPS y sin credenciales, al
-repositorio público \url{https://github.com/Velasquez076/orders-ci}, rama \texttt{*/master}. No se
-usa un job \emph{multibranch} ni una GitHub App.
+repositorio público. En \texttt{master}, el job apunta a \url{https://github.com/Velasquez076/orders-ci},
+rama \texttt{*/master}; el repositorio se trasladó después a la organización \texttt{Poligran-CI} y
+GitHub redirige la URL anterior. No se usa un job \emph{multibranch} ni una GitHub App.
 
 \subsection{Mecanismo implementado: consulta periódica (\emph{polling})}
 
@@ -1306,6 +1316,7 @@ para entregar un \emph{webhook}. Su costo es una latencia de detección de hasta
 consultas periódicas aunque no haya cambios.
 
 \subsection{Mecanismo alternativo: \emph{webhook}}
+\label{sec:webhook}
 
 El script de Job DSL permite cambiar al disparador \texttt{githubPush()} del plugin \texttt{github}
 con \texttt{USE\_GITHUB\_WEBHOOK=true}. El procedimiento documentado por el equipo es:
@@ -1315,10 +1326,21 @@ evento \emph{push}; (3)~definir \texttt{JENKINS\_PUBLIC\_URL} con la URL del tú
 contenedor para que JCasC actualice el disparador. GitHub envía entonces un \texttt{POST} en cada
 \emph{push} y Jenkins inicia la ejecución de inmediato \cite{github-webhooks}.
 
-\textbf{Estado}: el mecanismo está configurado en el código, pero no hay evidencia de que se haya
-activado. La configuración de \emph{webhooks} del repositorio no pudo consultarse (la API de GitHub
-exige permisos de administración, \nover) y ninguna evidencia muestra ejecuciones con causa
-\emph{GitHub push}.
+\textbf{Estado}: en \texttt{master} el mecanismo está configurado pero no activado. El 23 de
+noviembre de 2026 se activó sobre la rama \texttt{feature/jenkins-portable}: se registró en
+\texttt{Poligran-CI/orders-ci} un \emph{webhook} de eventos \emph{push} hacia un canal de
+\texttt{smee.io}, cuyo cliente reenvía cada evento al Jenkins local, y la ejecución \#4 se inició con la
+causa \emph{Started by GitHub push} (sección~\ref{sec:webhook-real}). Para que funcionara fue necesario
+corregir dos aspectos que en \texttt{master} impedirían el disparo:
+\begin{itemize}[noitemsep]
+  \item El plugin \texttt{github} solo activa los jobs cuya URL de repositorio coincide con la del
+        evento. GitHub envía \texttt{Poligran-CI/orders-ci} y el job de \texttt{master} declara
+        \texttt{Velasquez076/orders-ci}, por lo que el evento se recibiría pero no dispararía nada. En
+        la rama, \texttt{jenkins.yaml} usa la URL actual.
+  \item El \emph{webhook} no construye directamente: provoca una consulta del SCM registrado en la
+        \emph{última ejecución}. Tras cambiar la URL o la rama hace falta una ejecución con la nueva
+        configuración (la \#3, manual) para que los eventos siguientes encuentren cambios.
+\end{itemize}
 
 \subsection{Relación con GitHub Actions}
 \label{sec:gha}
@@ -1538,8 +1560,9 @@ equipo donde se elaboró este informe (Docker Desktop, motor 29.9.2), a partir d
 \texttt{feature/jenkins-portable}, creada desde \texttt{master} (\texttt{ee13139}). La configuración
 de \texttt{master} no podía ejecutarse tal cual en otro equipo, porque monta el JDK~21 y Maven desde
 rutas del equipo de otro integrante. En la rama se hicieron solo los cambios necesarios para que la
-instalación sea portable (tabla~\ref{tab:cambios-rama}); el job, el \texttt{jenkins.yaml}, los plugins y
-el \texttt{Jenkinsfile} no cambiaron, y el pipeline se siguió obteniendo de \texttt{master} en GitHub.
+instalación sea portable (tabla~\ref{tab:cambios-rama}). Las ejecuciones \#1 y \#2 usaron el
+\texttt{jenkins.yaml} de \texttt{master} y construyeron \texttt{master}; después se ajustó el job para
+activar el \emph{webhook} (ejecuciones \#3 y \#4). Los plugins y el \texttt{Jenkinsfile} no cambiaron.
 
 \begin{table}[H]
 \centering
@@ -1555,13 +1578,15 @@ el complemento \texttt{buildx} (\texttt{docker:29-cli}). Las rutas coinciden con
 \texttt{tool} de \texttt{jenkins.yaml}.\\
 \ruta{jenkins/docker-compose.yml} & Se eliminan los montajes del JDK, Maven, \texttt{/usr/share/java},
 \texttt{/etc/maven} y la CLI del anfitrión; solo se conserva el socket de Docker.\\
+\ruta{jenkins/jenkins.yaml} & URL del repositorio actualizada a \texttt{Poligran-CI/orders-ci} y rama
+configurable con \texttt{JENKINS\_BRANCH} (por defecto \texttt{*/master}).\\
 \texttt{.env.example} & Comentario sobre el GID del socket (Linux: grupo \texttt{docker}; Docker
-Desktop: 0).\\
+Desktop: 0) y variable \texttt{JENKINS\_BRANCH}.\\
 Arranque & \texttt{docker compose --env-file .env -f jenkins/docker-compose.yml up -d --build}.\\
 \bottomrule
 \end{tabularx}
-\caption{Cambios de la rama \texttt{feature/jenkins-portable} respecto de \texttt{master} (sin commit
-al momento de redactar este documento).}
+\caption{Cambios de la rama \texttt{feature/jenkins-portable} respecto de \texttt{master} (commit
+\texttt{5a76d6c}, publicado en GitHub; aún no integrado en \texttt{master}).}
 \label{tab:cambios-rama}
 \end{table}
 
@@ -1579,51 +1604,57 @@ original. Arrancar con \texttt{--env-file .env} lo resuelve (\texttt{jenkins\_lo
 \ruta{jenkins_plugins_instalados.txt}). Dentro del contenedor quedaron disponibles OpenJDK
 21.0.13.1 (Temurin), Maven 3.9.16, Docker CLI 29.10.0 y buildx 0.39.0.
 
-\paragraph{Ejecuciones.} La tabla~\ref{tab:builds-local} resume las dos ejecuciones obtenidas. La \#1 no
+\paragraph{Ejecuciones.} La tabla~\ref{tab:builds-local} resume las cuatro ejecuciones obtenidas. La \#1 no
 se lanzó a mano: el \emph{polling} encontró el job sin construcciones previas y la disparó con la
 causa \emph{Started by an SCM change}. La \#2 se lanzó manualmente por la API (con \emph{crumb} CSRF)
 después de añadir \texttt{buildx} a la imagen, ya que la \#1 usó el constructor heredado de Docker
-(aviso \texttt{DEPRECATED: The legacy builder}).
+(aviso \texttt{DEPRECATED: The legacy builder}). La \#3, también manual, fue la primera con el job
+apuntando a la rama \texttt{feature/jenkins-portable}, y la \#4 la disparó el \emph{webhook}
+(sección~\ref{sec:webhook-real}).
 
 \begin{table}[H]
 \centering
 \small
-\begin{tabular}{@{}l r r@{}}
+\begin{tabular}{@{}l r r r r@{}}
 \toprule
-\textbf{Etapa} & \textbf{\#1 (polling)} & \textbf{\#2 (manual)}\\
+\textbf{Etapa} & \textbf{\#1 (polling)} & \textbf{\#2 (manual)} & \textbf{\#3 (manual)} & \textbf{\#4 (webhook)}\\
 \midrule
-Declarative: Checkout SCM & 1,0 s & 0,6 s\\
-Declarative: Tool Install & 0,2 s & 0,2 s\\
-Verify version & 1,0 s & 1,1 s\\
-Build & 192,5 s & 2,8 s\\
-Test & 52,1 s & 9,0 s\\
-Package & 43,7 s & 2,8 s\\
-Docker Build & 273,5 s & 113,9 s\\
-Declarative: Post Actions & 0,1 s & 0,1 s\\
+Declarative: Checkout SCM & 1,0 s & 0,6 s & 4,4 s & 0,7 s\\
+Declarative: Tool Install & 0,2 s & 0,2 s & 0,2 s & 0,1 s\\
+Verify version & 1,0 s & 1,1 s & 1,3 s & 1,0 s\\
+Build & 192,5 s & 2,8 s & 3,4 s & 2,8 s\\
+Test & 52,1 s & 9,0 s & 11,2 s & 10,2 s\\
+Package & 43,7 s & 2,8 s & 3,1 s & 3,0 s\\
+Docker Build & 273,5 s & 113,9 s & 2,3 s & 1,9 s\\
+Declarative: Post Actions & 0,1 s & 0,1 s & 0,1 s & 0,1 s\\
 \midrule
-\textbf{Total} & \textbf{567,4 s (9 min 27 s)} & \textbf{133,5 s (2 min 14 s)}\\
+\textbf{Total} & \textbf{567,4 s} & \textbf{133,5 s} & \textbf{29,7 s} & \textbf{21,1 s}\\
 \midrule
-Inicio (-05) & 22:04:05 & 22:15:34\\
-Causa & \emph{Started by an SCM change} & \emph{Started by user Admin}\\
-Commit & \texttt{ee13139} & \texttt{ee13139}\\
-Pruebas (JUnit) & 25 / 0 fallos / 0 omitidas & 25 / 0 fallos / 0 omitidas\\
-Artefacto & \texttt{target/orders.jar} & \texttt{target/orders.jar}\\
-Imágenes & \texttt{orders-ci:1}, \texttt{latest} & \texttt{orders-ci:2}, \texttt{latest}\\
-Resultado & \textcolor{ok}{SUCCESS} & \textcolor{ok}{SUCCESS}\\
+Inicio (-05) & 22:04:05 & 22:15:34 & 23:23:11 & 23:24:06\\
+Commit & \texttt{ee13139} & \texttt{ee13139} & \texttt{5a76d6c} & \texttt{b67c6a1}\\
+Rama & \texttt{master} & \texttt{master} & \multicolumn{2}{c}{\texttt{feature/jenkins-portable}}\\
+Pruebas (aprob./fallos) & 25 / 0 & 25 / 0 & 25 / 0 & 25 / 0\\
+Imagen & \texttt{orders-ci:1} & \texttt{orders-ci:2} & \texttt{orders-ci:3} & \texttt{orders-ci:4}\\
+Resultado & \textcolor{ok}{SUCCESS} & \textcolor{ok}{SUCCESS} & \textcolor{ok}{SUCCESS} & \textcolor{ok}{SUCCESS}\\
 \bottomrule
 \end{tabular}
 \caption{Ejecuciones del job en el Jenkins de la rama \texttt{feature/jenkins-portable}
-(23 de noviembre de 2026), según \texttt{wfapi/describe} y la API del job.}
+(23 de noviembre de 2026), según \texttt{wfapi/describe} y la API del job. Todas archivaron
+\texttt{target/orders.jar} y etiquetaron además \texttt{orders-ci:latest}. Causas: \#1
+\emph{Started by an SCM change}; \#2 y \#3 \emph{Started by user Admin}; \#4 \emph{Started by GitHub
+push by SebastianArevalo94}.}
 \label{tab:builds-local}
 \end{table}
 
 La diferencia de duración se debe a la caché: en la \#1 el repositorio Maven de
 \texttt{jenkins\_home} estaba vacío y \emph{Build} descargó todas las dependencias; en la \#2 ya
-estaban disponibles. \emph{Docker Build} sigue siendo la etapa más larga, porque el
+estaban disponibles. En la \#2, \emph{Docker Build} siguió siendo la etapa más larga, porque el
 \texttt{Dockerfile} vuelve a resolver las dependencias dentro de la imagen
-(sección~\ref{sec:pipeline-back}). Ambas duraciones corresponden a este equipo y a su red; no son las
-del servidor original.
+(sección~\ref{sec:pipeline-back}); en la \#3 y la \#4 bajó a unos 2~s porque BuildKit reutilizó las
+capas en caché (los commits de la rama no modifican el código del backend). Todas las duraciones
+corresponden a este equipo y a su red; no son las del servidor original.
 
+\reservar{9cm}
 \begin{lstlisting}[caption={Extracto de \texttt{jenkins\_build1\_console.txt} (marcas de tiempo en UTC).},label={lst:jenkins-console}]
 Started by an SCM change
 Obtained Jenkinsfile from git https://github.com/Velasquez076/orders-ci
@@ -1663,8 +1694,8 @@ No changes
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.92\textwidth]{evidencias_entrega2/capturas/01_job_stage_view.png}
-\caption{Página del job con la vista de etapas (\texttt{pipeline-stage-view}): ejecuciones \#1 y
-\#2 con todas las etapas en verde y \texttt{orders.jar} como último artefacto.}
+\caption{Página del job con la vista de etapas (\texttt{pipeline-stage-view}) tras las ejecuciones
+\#1 y \#2, con todas las etapas en verde y \texttt{orders.jar} como último artefacto.}
 \label{fig:stageview}
 \end{figure}
 
@@ -1684,11 +1715,83 @@ No changes
 \label{fig:build1-polling}
 \end{figure}
 
-Esta ejecución confirma de forma directa la carga de JCasC, la creación del job con Job DSL, el
-disparo por \emph{polling}, la resolución de herramientas, el acceso al socket, la publicación JUnit,
-el archivado del artefacto y la construcción de la imagen. No reemplaza las ejecuciones \#1--\#4 del
-servidor original, que siguen documentadas solo por el informe del equipo, y no incluye una ejecución
-con pruebas fallidas, porque provocarla exigiría introducir un error en \texttt{master}.
+Estas ejecuciones confirman de forma directa la carga de JCasC, la creación del job con Job DSL, el
+disparo por \emph{polling} y por \emph{webhook}, la resolución de herramientas, el acceso al socket, la
+publicación JUnit, el archivado del artefacto y la construcción de la imagen. No reemplazan las
+ejecuciones \#1--\#4 del servidor original, que siguen documentadas solo por el informe del equipo, y
+no incluyen una ejecución con pruebas fallidas, porque provocarla exigiría introducir un error en el
+código del backend.
+
+\reservar{8cm}
+\subsubsection*{Activación del \emph{webhook}}
+\label{sec:webhook-real}
+\addcontentsline{toc}{subsubsection}{Activación del \emph{webhook}}
+
+Con permisos de administración sobre \texttt{Poligran-CI/orders-ci}, el 23 de noviembre de 2026 se
+siguió el procedimiento de la sección~\ref{sec:webhook}, eligiendo \texttt{smee.io} como túnel
+porque solo reenvía los eventos y no expone la interfaz de Jenkins a internet:
+\begin{enumerate}[noitemsep]
+  \item Se creó un canal en \texttt{smee.io} y se inició el cliente local \texttt{smee-client}, que
+        reenvía cada evento a \texttt{http://localhost:8080/github-webhook/}.
+  \item Se registró en el repositorio, con la API de GitHub, el \emph{webhook} \texttt{716049034}:
+        destino el canal de \texttt{smee.io}, tipo \texttt{json}, solo el evento \emph{push},
+        verificación SSL activa y sin secreto (\ruta{github_webhook_config.json}).
+  \item Se arrancó Jenkins con \texttt{USE\_GITHUB\_WEBHOOK=true} y con \texttt{JENKINS\_BRANCH}
+        apuntando a \texttt{feature/jenkins-portable}; Job DSL reemplazó \texttt{pollSCM} por
+        \texttt{GitHubPushTrigger}.
+\end{enumerate}
+
+GitHub entregó tres eventos, todos con respuesta \texttt{200} (listado~\ref{lst:webhook-entregas}).
+El \emph{ping} se recibió al crear el \emph{webhook}. El primer \emph{push}, al publicar la rama, se
+recibió y \emph{tocó} el job, pero la consulta usó el SCM registrado en la ejecución \#2 (rama
+\texttt{master}, ya construida) y terminó en \emph{No changes}
+(\ruta{jenkins_webhook_push1_polling.txt}). Tras la ejecución manual \#3 con la nueva configuración,
+el segundo \emph{push} (commit \texttt{b67c6a1}) encontró cambios y disparó la ejecución \#4
+(listado~\ref{lst:webhook-poll}, figuras~\ref{fig:build4-webhook} y~\ref{fig:stageview-webhook}).
+
+\begin{lstlisting}[caption={Entregas del \emph{webhook} según la API de GitHub y eventos registrados por Jenkins (UTC).},label={lst:webhook-entregas}]
+2026-11-24T04:19:10Z  ping  200 OK
+2026-11-24T04:19:23Z  push  200 OK
+2026-11-24T04:24:00Z  push  200 OK
+--- jenkins (docker logs) ---
+04:19:11 PingGHEventSubscriber: PING webhook received from repo <https://github.com/Poligran-CI/orders-ci>!
+04:19:23 DefaultPushGHEventSubscriber: Received PushEvent for https://github.com/Poligran-CI/orders-ci
+04:19:23 Poked integracion-continua-backend-orders-ci
+04:24:00 DefaultPushGHEventSubscriber: Received PushEvent for https://github.com/Poligran-CI/orders-ci
+04:24:00 Poked integracion-continua-backend-orders-ci
+\end{lstlisting}
+
+\reservar{7cm}
+\begin{lstlisting}[caption={\emph{GitHub Hook Log} del job tras el segundo \emph{push}: el evento provoca la consulta y esta encuentra cambios.},label={lst:webhook-poll}]
+Started by event from 140.82.115.173:50206 => https://localhost:8080/github-webhook/
+Using strategy: Default
+[poll] Last Built Revision: Revision 5a76d6c39c818757eccd5b787b45fa429902426b (refs/remotes/origin/feature/jenkins-portable)
+ > git ls-remote -h -- https://github.com/Poligran-CI/orders-ci # timeout=10
+[poll] Latest remote head revision on refs/heads/feature/jenkins-portable is: b67c6a1a8f45d06c52f04b7466cf38b6f9eef255
+Done. Took 0.46 sec
+Changes found
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\textwidth]{evidencias_entrega2/capturas/06_build4_webhook.png}
+\caption{Resumen de la ejecución \#4: causa \emph{Started by GitHub push by SebastianArevalo94},
+revisión \texttt{b67c6a1} de \texttt{feature/jenkins-portable}, artefacto y pruebas sin fallos.}
+\label{fig:build4-webhook}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.80\textwidth]{evidencias_entrega2/capturas/08_job_stage_view_webhook.png}
+\caption{Vista de etapas con las cuatro ejecuciones locales; la \#4 muestra el commit recibido por el
+\emph{webhook}.}
+\label{fig:stageview-webhook}
+\end{figure}
+
+El \emph{webhook} queda registrado en el repositorio, pero solo funciona mientras el cliente de
+\texttt{smee.io} y Jenkins están en ejecución en este equipo; con ellos detenidos, las entregas
+fallan sin afectar al repositorio. Para un uso permanente se necesita un Jenkins accesible de forma
+estable y un secreto en el \emph{webhook}.
 
 \reservar{16cm}
 \subsection{Síntesis de evidencias}
@@ -1729,6 +1832,10 @@ E13 & Capturas (figuras~\ref{fig:stageview}--\ref{fig:build1-polling}) & Vista d
 JUnit, resumen de ejecución y \emph{polling} en la interfaz de Jenkins. & Evidencias de ejecución\\
 E14 & Ejecución \#2 y lista de plugins instalados & Disparo manual, caché, BuildKit;
 plugins efectivamente instalados. & Plugins, imagen Docker\\
+E15 & \emph{Webhook} \texttt{716049034}, entregas, registros y ejecución \#4
+(listados~\ref{lst:webhook-entregas}--\ref{lst:webhook-poll}, figuras~\ref{fig:build4-webhook}
+y~\ref{fig:stageview-webhook}) & Un \emph{push} a GitHub dispara el pipeline sin \emph{polling}. &
+\emph{Webhooks}, detección de cambios\\
 \bottomrule
 \end{tabularx}
 \caption{Evidencias, lo que demuestran y el requisito con el que se relacionan.}
@@ -1736,9 +1843,8 @@ plugins efectivamente instalados. & Plugins, imagen Docker\\
 \end{table}
 
 \paragraph{Aspectos no verificables.} Duraciones, fechas exactas, registros y causas de disparo de las
-ejecuciones \#1--\#4 del servidor original; recursos de hardware de ese servidor; configuración de
-\emph{webhooks} en GitHub; número de pruebas del frontend; una ejecución de Jenkins con pruebas
-fallidas.
+ejecuciones \#1--\#4 del servidor original; recursos de hardware de ese servidor; número de
+pruebas del frontend; una ejecución de Jenkins con pruebas fallidas.
 
 \clearpage
 % ===============================================================
@@ -1758,13 +1864,13 @@ fallidas.
 \midrule
 \endhead
 Instalación de Jenkins & Contenedor Docker con imagen propia, Compose y volumen persistente &
-E1, E9, E11 & \parcial{} (portable en una rama aún sin integrar)\\
+E1, E9, E11 & \parcial{} (portable en una rama publicada, aún sin integrar en \texttt{master})\\
 Configuración de Jenkins & JCasC + Job DSL; sin configuración manual & E2 & \ok\\
 Plugins & 12 plugins declarados (80 instalados con dependencias); 9 en uso & E1, E14, tabla~\ref{tab:plugins} & \ok\\
 Credenciales y secretos & \texttt{.env} no versionado; variables en JCasC; credencial cifrada &
 E2, \texttt{.gitignore} & \parcial{} (token definido sin uso)\\
 Seguridad & Usuario local, sin registro, sin acceso anónimo & E2, tabla~\ref{tab:seguridad} &
-\parcial{} (sin roles; socket de Docker)\\
+\parcial{} (sin roles; socket de Docker; \emph{webhook} sin secreto)\\
 Pipeline del backend & \texttt{Jenkinsfile} declarativo de cinco etapas & E3, E5, E11 & \ok\\
 Pruebas automatizadas en el pipeline & Etapa \emph{Test} + publicación JUnit & E5, E8, E11, E13 & \ok\\
 Construcción de artefactos & \texttt{orders.jar} archivado con huella & E5, E8, E11 & \ok\\
@@ -1773,12 +1879,12 @@ Construcción de imágenes Docker & \texttt{orders-ci:<n>} y \texttt{latest} & E
 Comportamiento ante errores & Etapas que fallan detienen el pipeline; \texttt{post} & E4 & \ok\\
 Pipeline del frontend en Jenkins & No implementado; solo GitHub Actions en rama sin integrar & E7 &
 \pend\\
-Detección de cambios en GitHub & \texttt{pollSCM H/2 * * * *} sobre \texttt{master} & E2, E11, E12 &
+Detección de cambios en GitHub & \texttt{pollSCM H/2 * * * *} sobre \texttt{master}; \texttt{githubPush()} en modo \emph{webhook} & E2, E11, E12, E15 &
 \ok\\
-\emph{Webhooks} & Disparador \texttt{githubPush()} configurable, no activado & E2 & \pend\\
-Evidencias de ejecución en Jenkins & Informe del equipo (\#1--\#4) y ejecuciones propias (\#1--\#2) & E4, E5, E11, E14 &
+\emph{Webhooks} & \emph{Webhook} de \emph{push} activo vía \texttt{smee.io}; ejecución \#4 disparada por GitHub & E15 & \parcial{} (activo solo en la rama y con el equipo local encendido)\\
+Evidencias de ejecución en Jenkins & Informe del equipo (\#1--\#4) y ejecuciones propias (\#1--\#4) & E4, E5, E11, E14, E15 &
 \ok\\
-Capturas y registros de consola de Jenkins & Capturas, consola, etapas y JUnit exportados & E11--E13 & \ok\\
+Capturas y registros de consola de Jenkins & Capturas, consola, etapas y JUnit exportados & E11--E13, E15 & \ok\\
 Arquitectura y diagramas & Figuras~\ref{fig:arquitectura} y~\ref{fig:flujo} & Este documento & \ok\\
 Relación con GitHub Actions & Funciones complementarias; desajuste \texttt{main}/\texttt{master} &
 E7, listado~\ref{lst:gha-trigger} & \parcial{}\\
@@ -1802,8 +1908,8 @@ aceptación; y (3)~un \textbf{historial de ejecuciones} con el que comparar herr
 \paragraph{Evaluación de Travis CI y Codeship.} La tercera entrega contempla evaluar Travis CI y
 Codeship, que \textbf{aún no se han implementado}. Ambos son servicios alojados que leen un archivo de
 configuración del repositorio y se integran con GitHub mediante \emph{webhooks} gestionados por el
-propio servicio \cite{travis-docs}, lo que eliminaría la limitación de \emph{polling} de la
-instalación local. La comparación podrá hacerse con los mismos comandos y sobre el mismo commit,
+propio servicio \cite{travis-docs}, sin necesidad de túneles como el usado con la instalación
+local. La comparación podrá hacerse con los mismos comandos y sobre el mismo commit,
 usando como criterios: tiempo hasta la retroalimentación, esfuerzo de configuración, gestión de
 secretos, soporte de Docker, publicación de reportes JUnit, costo y mantenimiento de
 infraestructura (nulo en los servicios alojados, propio en Jenkins). La disponibilidad actual y las
@@ -1814,9 +1920,11 @@ condiciones de uso de ambos servicios deberán comprobarse en el momento de la e
   \item Pipeline de Jenkins para el frontend (Node.js~22: \texttt{npm ci}, \texttt{npm test},
         \texttt{npm run build}) tras integrar \texttt{feature/frontend}.
   \item Integrar la corrección del disparador de GitHub Actions (\texttt{0bad97e}).
-  \item Activar el \emph{webhook} mediante un túnel o un servidor accesible y registrar la evidencia.
+  \item Añadir un secreto al \emph{webhook} y alojar Jenkins en un servidor accesible de forma
+        estable, en lugar de depender de \texttt{smee.io} y de un equipo personal.
   \item Revisar e integrar en \texttt{master} la rama \texttt{feature/jenkins-portable}, que ya
-        sustituye los montajes del anfitrión por herramientas dentro de la imagen.
+        sustituye los montajes del anfitrión por herramientas dentro de la imagen y corrige la URL
+        del repositorio para el \emph{webhook}.
   \item Publicar la imagen en un registro y desplegarla automáticamente en el ambiente \texttt{dev}
         con \texttt{docker compose}, avanzando hacia la entrega continua.
   \item Añadir \texttt{timeout}, limpieza del espacio de trabajo y de imágenes antiguas, y
@@ -1851,8 +1959,9 @@ condiciones de uso de ambos servicios deberán comprobarse en el momento de la e
         y Job DSL), que detecta cada cambio de \texttt{master} y ejecuta un pipeline declarativo de
         cinco etapas. Según el informe del equipo, la ejecución \#4 completó el pipeline con 25
         pruebas aprobadas, el \texttt{.jar} archivado y la imagen Docker construida. Con la misma
-        configuración, una instalación propia obtuvo dos ejecuciones exitosas sobre \texttt{ee13139},
-        la primera disparada por \emph{polling}, con capturas, registros y reportes exportados.
+        configuración, una instalación propia obtuvo cuatro ejecuciones exitosas, la primera
+        disparada por \emph{polling} y la cuarta por un \emph{webhook} de GitHub, con capturas,
+        registros y reportes exportados.
   \item Las tres ejecuciones fallidas mostraron el valor del enfoque: cada problema se detectó en una
         etapa concreta, con un mensaje explícito, y se corrigió con un cambio versionado.
   \item Frente al proceso convencional, la ejecución de las pruebas deja de depender de una persona:
@@ -1860,8 +1969,9 @@ condiciones de uso de ambos servicios deberán comprobarse en el momento de la e
         falla una prueba.
   \item Las limitaciones son claras: en \texttt{master} la instalación depende de rutas de un equipo
         concreto (resuelto en \texttt{feature/jenkins-portable}, pendiente de integrar) y
-        \texttt{DOCKER\_GID} solo se aplica con \texttt{--env-file}; la detección es por
-        \emph{polling}; todo usuario autenticado es administrador y el socket de Docker otorga
+        \texttt{DOCKER\_GID} solo se aplica con \texttt{--env-file}; el \emph{webhook} solo funciona
+        en la rama y con el equipo local encendido, y no tiene secreto; todo usuario autenticado es
+        administrador y el socket de Docker otorga
         control del anfitrión; no hay registro de imágenes ni despliegue; y el frontend no tiene
         pipeline en Jenkins.
 \end{itemize}
@@ -2025,17 +2135,21 @@ la imagen.\\
 \texttt{surefire\_resumen.txt} & Resumen por clase de los reportes JUnit generados.\\
 \texttt{github\_actions\_runs.txt} & Ejecuciones y pasos de GitHub Actions consultados con \texttt{gh}.\\
 \texttt{validaciones.txt} & Validación YAML y Compose, rama por defecto, disparador de Actions y
-resultado de la consulta de \emph{webhooks}.\\
+consulta de \emph{webhooks} previa a obtener permisos.\\
 \texttt{jenkins\_local\_build.txt} & Construcción de la imagen de Jenkins, hallazgo de
 \texttt{DOCKER\_GID}, herramientas del contenedor y carga de JCasC.\\
-\texttt{jenkins\_build1\_console.txt}, \texttt{jenkins\_build2\_console.txt} & Consola completa de las
-ejecuciones \#1 y \#2.\\
-\texttt{jenkins\_build\{1,2\}\_stages.json} & Etapas y duraciones (\texttt{wfapi/describe}).\\
-\texttt{jenkins\_build\{1,2\}\_tests.json} & Reporte JUnit publicado por Jenkins.\\
-\texttt{jenkins\_build\{1,2\}\_info.json} & Causa, fecha, duración y artefactos.\\
+\texttt{jenkins\_build\{1..4\}\_console.txt} & Consola completa de las ejecuciones \#1 a \#4.\\
+\texttt{jenkins\_build\{1..4\}\_stages.json} & Etapas y duraciones (\texttt{wfapi/describe}).\\
+\texttt{jenkins\_build\{1..4\}\_tests.json} & Reporte JUnit publicado por Jenkins.\\
+\texttt{jenkins\_build\{1..4\}\_info.json} & Causa, fecha y duración.\\
+\texttt{github\_webhook\_config.json} & Configuración del \emph{webhook}, sin la URL del canal.\\
+\texttt{github\_webhook\_entregas.txt} & Entregas del \emph{webhook} (\emph{ping} y \emph{push}) con su código de respuesta.\\
+\texttt{jenkins\_webhook\_eventos.txt} & Eventos de GitHub registrados en el log de Jenkins.\\
+\texttt{jenkins\_webhook\_push\{1,2\}\_polling.txt} & \emph{GitHub Hook Log} de cada \emph{push}.\\
 \texttt{jenkins\_plugins\_instalados.txt} & Plugins instalados y su versión.\\
 \texttt{jenkins\_polling\_e\_imagenes.txt} & \texttt{scm-polling.log} e imágenes \texttt{orders-ci}.\\
-\texttt{capturas/*.png} & Capturas de la interfaz de Jenkins (figuras~\ref{fig:stageview}--\ref{fig:build1-polling}).\\
+\texttt{capturas/*.png} & Capturas de la interfaz de Jenkins (figuras~\ref{fig:stageview}--\ref{fig:build1-polling},
+\ref{fig:build4-webhook} y~\ref{fig:stageview-webhook}).\\
 \bottomrule
 \end{tabularx}
 \caption{Archivos de evidencia generados para la Entrega~2.}
@@ -2056,11 +2170,11 @@ Herramienta & Claude Code (Anthropic), modelo Claude Opus 5.5.\\
 Fecha & 23 de noviembre de 2026.\\
 Uso & Análisis del repositorio (archivos, historial de Git, ramas y ejecuciones de GitHub Actions);
 verificaciones en contenedores sobre una copia del commit \texttt{ee13139}; a petición del equipo,
-creación de la rama local \texttt{feature/jenkins-portable}, ejecución de Jenkins y exportación de
-evidencias; redacción de la Parte~II, diagramas e integración de ambas entregas en este documento.\\
+creación de la rama \texttt{feature/jenkins-portable}, ejecución de Jenkins, registro del
+\emph{webhook} y exportación de evidencias; redacción de la Parte~II, diagramas e integración de ambas entregas en este documento.\\
 Restricciones aplicadas & No se modificó el código de la aplicación ni el frontend; los cambios de
-configuración de Jenkins quedaron en una rama local sin commit ni \emph{push}; no se incluyeron
-secretos. Los datos de las ejecuciones \#1--\#4 provienen del
+configuración de Jenkins se confirmaron y publicaron, a petición del equipo, solo en
+\texttt{feature/jenkins-portable} (\texttt{master} no se modificó); no se incluyeron secretos. Los datos de las ejecuciones \#1--\#4 provienen del
 informe del equipo y se identifican como tales.\\
 Responsabilidad & El equipo revisa, valida y asume el contenido entregado.\\
 \bottomrule

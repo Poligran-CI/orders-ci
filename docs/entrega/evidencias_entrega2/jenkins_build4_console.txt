@@ -1,0 +1,460 @@
+Started by GitHub push by SebastianArevalo94
+Obtained Jenkinsfile from git https://github.com/Poligran-CI/orders-ci
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/integracion-continua-backend-orders-ci
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/integracion-continua-backend-orders-ci/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/Poligran-CI/orders-ci # timeout=10
+Fetching upstream changes from https://github.com/Poligran-CI/orders-ci
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/Poligran-CI/orders-ci +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/feature/jenkins-portable^{commit} # timeout=10
+Checking out Revision b67c6a1a8f45d06c52f04b7466cf38b6f9eef255 (refs/remotes/origin/feature/jenkins-portable)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f b67c6a1a8f45d06c52f04b7466cf38b6f9eef255 # timeout=10
+Commit message: "Add Jenkins webhook evidence (ping, first push event, build #3)"
+ > git rev-list --no-walk 5a76d6c39c818757eccd5b787b45fa429902426b # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Tool Install)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Verify version)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2026-11-24T04:24:08.958Z] + java -version
+[2026-11-24T04:24:08.958Z] openjdk version "21.0.13.1" 2026-11-17 LTS
+[2026-11-24T04:24:08.958Z] OpenJDK Runtime Environment Temurin-21.0.13.1+2 (build 21.0.13.1+2-LTS)
+[2026-11-24T04:24:08.958Z] OpenJDK 64-Bit Server VM Temurin-21.0.13.1+2 (build 21.0.13.1+2-LTS, mixed mode, sharing)
+[Pipeline] sh
+[2026-11-24T04:24:09.228Z] + mvn -version
+[2026-11-24T04:24:09.228Z] Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)
+[2026-11-24T04:24:09.228Z] Maven home: /usr/share/maven
+[2026-11-24T04:24:09.228Z] Java version: 21.0.13.1, vendor: Eclipse Adoptium, runtime: /opt/jdk21
+[2026-11-24T04:24:09.228Z] Default locale: en, platform encoding: UTF-8
+[2026-11-24T04:24:09.228Z] OS name: "linux", version: "7.0.14-linuxkit", arch: "amd64", family: "unix"
+[Pipeline] sh
+[2026-11-24T04:24:09.498Z] + docker --version
+[2026-11-24T04:24:09.498Z] Docker version 29.10.0, build fdd4b8e
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2026-11-24T04:24:09.950Z] + mvn -B clean compile
+[2026-11-24T04:24:10.861Z] [INFO] Scanning for projects...
+[2026-11-24T04:24:10.861Z] [INFO] 
+[2026-11-24T04:24:10.861Z] [INFO] -------------------------< com.stores:orders >--------------------------
+[2026-11-24T04:24:10.861Z] [INFO] Building orders 0.0.3-RC
+[2026-11-24T04:24:10.861Z] [INFO]   from pom.xml
+[2026-11-24T04:24:10.861Z] [INFO] --------------------------------[ jar ]---------------------------------
+[2026-11-24T04:24:11.412Z] [INFO] 
+[2026-11-24T04:24:11.412Z] [INFO] --- clean:3.3.2:clean (default-clean) @ orders ---
+[2026-11-24T04:24:11.413Z] [INFO] Deleting /var/jenkins_home/workspace/integracion-continua-backend-orders-ci/target
+[2026-11-24T04:24:11.413Z] [INFO] 
+[2026-11-24T04:24:11.413Z] [INFO] --- resources:3.3.1:resources (default-resources) @ orders ---
+[2026-11-24T04:24:11.413Z] [INFO] Copying 4 resources from src/main/resources to target/classes
+[2026-11-24T04:24:11.413Z] [INFO] Copying 1 resource from src/main/resources to target/classes
+[2026-11-24T04:24:11.413Z] [INFO] 
+[2026-11-24T04:24:11.413Z] [INFO] --- compiler:3.13.0:compile (default-compile) @ orders ---
+[2026-11-24T04:24:11.413Z] [INFO] Recompiling the module because of changed source code.
+[2026-11-24T04:24:11.413Z] [INFO] Compiling 16 source files with javac [debug parameters release 21] to target/classes
+[2026-11-24T04:24:12.324Z] [INFO] ------------------------------------------------------------------------
+[2026-11-24T04:24:12.324Z] [INFO] BUILD SUCCESS
+[2026-11-24T04:24:12.324Z] [INFO] ------------------------------------------------------------------------
+[2026-11-24T04:24:12.324Z] [INFO] Total time:  1.387 s
+[2026-11-24T04:24:12.324Z] [INFO] Finished at: 2026-11-24T04:24:12Z
+[2026-11-24T04:24:12.325Z] [INFO] ------------------------------------------------------------------------
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2026-11-24T04:24:12.764Z] + mvn -B test
+[2026-11-24T04:24:13.675Z] [INFO] Scanning for projects...
+[2026-11-24T04:24:13.926Z] [INFO] 
+[2026-11-24T04:24:13.926Z] [INFO] -------------------------< com.stores:orders >--------------------------
+[2026-11-24T04:24:13.926Z] [INFO] Building orders 0.0.3-RC
+[2026-11-24T04:24:13.926Z] [INFO]   from pom.xml
+[2026-11-24T04:24:13.926Z] [INFO] --------------------------------[ jar ]---------------------------------
+[2026-11-24T04:24:14.177Z] [INFO] 
+[2026-11-24T04:24:14.177Z] [INFO] --- resources:3.3.1:resources (default-resources) @ orders ---
+[2026-11-24T04:24:14.428Z] [INFO] Copying 4 resources from src/main/resources to target/classes
+[2026-11-24T04:24:14.428Z] [INFO] Copying 1 resource from src/main/resources to target/classes
+[2026-11-24T04:24:14.428Z] [INFO] 
+[2026-11-24T04:24:14.428Z] [INFO] --- compiler:3.13.0:compile (default-compile) @ orders ---
+[2026-11-24T04:24:14.428Z] [INFO] Nothing to compile - all classes are up to date.
+[2026-11-24T04:24:14.428Z] [INFO] 
+[2026-11-24T04:24:14.428Z] [INFO] --- resources:3.3.1:testResources (default-testResources) @ orders ---
+[2026-11-24T04:24:14.428Z] [INFO] skip non existing resourceDirectory /var/jenkins_home/workspace/integracion-continua-backend-orders-ci/src/test/resources
+[2026-11-24T04:24:14.428Z] [INFO] 
+[2026-11-24T04:24:14.428Z] [INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ orders ---
+[2026-11-24T04:24:14.428Z] [INFO] Recompiling the module because of changed source code.
+[2026-11-24T04:24:14.428Z] [INFO] Compiling 6 source files with javac [debug parameters release 21] to target/test-classes
+[2026-11-24T04:24:15.340Z] [INFO] 
+[2026-11-24T04:24:15.340Z] [INFO] --- surefire:3.2.5:test (default-test) @ orders ---
+[2026-11-24T04:24:15.591Z] [INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[2026-11-24T04:24:15.591Z] [INFO] 
+[2026-11-24T04:24:15.591Z] [INFO] -------------------------------------------------------
+[2026-11-24T04:24:15.591Z] [INFO]  T E S T S
+[2026-11-24T04:24:15.591Z] [INFO] -------------------------------------------------------
+[2026-11-24T04:24:16.142Z] [INFO] Running com.stores.orders.OrdersApplicationTests
+[2026-11-24T04:24:16.142Z] 04:24:16.107 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.stores.orders.OrdersApplicationTests]: OrdersApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+[2026-11-24T04:24:16.392Z] 04:24:16.172 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.stores.orders.OrdersApplication for test class com.stores.orders.OrdersApplicationTests
+[2026-11-24T04:24:16.643Z] 
+[2026-11-24T04:24:16.643Z]   .   ____          _            __ _ _
+[2026-11-24T04:24:16.643Z]  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+[2026-11-24T04:24:16.643Z] ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+[2026-11-24T04:24:16.643Z]  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+[2026-11-24T04:24:16.643Z]   '  |____| .__|_| |_|_| |_\__, | / / / /
+[2026-11-24T04:24:16.643Z]  =========|_|==============|___/=/_/_/_/
+[2026-11-24T04:24:16.643Z] 
+[2026-11-24T04:24:16.643Z]  :: Spring Boot ::                (v3.3.5)
+[2026-11-24T04:24:16.643Z] 
+[2026-11-24T04:24:16.643Z] 2026-11-24T04:24:16.465Z  INFO 2052 --- [orders] [           main] c.stores.orders.OrdersApplicationTests   : Starting OrdersApplicationTests using Java 21.0.13.1 with PID 2052 (started by jenkins in /var/jenkins_home/workspace/integracion-continua-backend-orders-ci)
+[2026-11-24T04:24:16.643Z] 2026-11-24T04:24:16.466Z  INFO 2052 --- [orders] [           main] c.stores.orders.OrdersApplicationTests   : The following 1 profile is active: "test"
+[2026-11-24T04:24:17.195Z] 2026-11-24T04:24:17.029Z  INFO 2052 --- [orders] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2026-11-24T04:24:17.195Z] 2026-11-24T04:24:17.070Z  INFO 2052 --- [orders] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 35 ms. Found 1 JPA repository interface.
+[2026-11-24T04:24:17.446Z] 2026-11-24T04:24:17.334Z  INFO 2052 --- [orders] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+[2026-11-24T04:24:17.696Z] 2026-11-24T04:24:17.486Z  INFO 2052 --- [orders] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:orders user=SA
+[2026-11-24T04:24:17.696Z] 2026-11-24T04:24:17.488Z  INFO 2052 --- [orders] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+[2026-11-24T04:24:17.696Z] 2026-11-24T04:24:17.582Z  INFO 2052 --- [orders] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+[2026-11-24T04:24:17.696Z] 2026-11-24T04:24:17.617Z  INFO 2052 --- [orders] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+[2026-11-24T04:24:17.947Z] 2026-11-24T04:24:17.640Z  INFO 2052 --- [orders] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+[2026-11-24T04:24:17.947Z] 2026-11-24T04:24:17.851Z  INFO 2052 --- [orders] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+[2026-11-24T04:24:18.859Z] 2026-11-24T04:24:18.495Z  INFO 2052 --- [orders] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+[2026-11-24T04:24:18.859Z] 2026-11-24T04:24:18.517Z  INFO 2052 --- [orders] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2026-11-24T04:24:19.771Z] 2026-11-24T04:24:19.402Z  INFO 2052 --- [orders] [           main] c.stores.orders.OrdersApplicationTests   : Started OrdersApplicationTests in 3.131 seconds (process running for 3.91)
+[2026-11-24T04:24:19.771Z] OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[2026-11-24T04:24:19.771Z] WARNING: A Java agent has been loaded dynamically (/var/jenkins_home/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.19/byte-buddy-agent-1.14.19.jar)
+[2026-11-24T04:24:19.771Z] WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+[2026-11-24T04:24:19.771Z] WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+[2026-11-24T04:24:19.771Z] WARNING: Dynamic loading of agents will be disallowed by default in a future release
+[2026-11-24T04:24:20.022Z] [INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.858 s -- in com.stores.orders.OrdersApplicationTests
+[2026-11-24T04:24:20.022Z] [INFO] Running com.stores.orders.service.InventoryServiceTest
+[2026-11-24T04:24:20.022Z] 2026-11-24T04:24:19.856Z  INFO 2052 --- [orders] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.stores.orders.service.InventoryServiceTest]: InventoryServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+[2026-11-24T04:24:20.022Z] 2026-11-24T04:24:19.875Z  INFO 2052 --- [orders] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.stores.orders.OrdersApplication for test class com.stores.orders.service.InventoryServiceTest
+[2026-11-24T04:24:20.022Z] 
+[2026-11-24T04:24:20.022Z]   .   ____          _            __ _ _
+[2026-11-24T04:24:20.022Z]  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+[2026-11-24T04:24:20.022Z] ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+[2026-11-24T04:24:20.022Z]  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+[2026-11-24T04:24:20.022Z]   '  |____| .__|_| |_|_| |_\__, | / / / /
+[2026-11-24T04:24:20.022Z]  =========|_|==============|___/=/_/_/_/
+[2026-11-24T04:24:20.022Z] 
+[2026-11-24T04:24:20.022Z]  :: Spring Boot ::                (v3.3.5)
+[2026-11-24T04:24:20.022Z] 
+[2026-11-24T04:24:20.022Z] 2026-11-24T04:24:19.901Z  INFO 2052 --- [orders] [           main] c.s.orders.service.InventoryServiceTest  : Starting InventoryServiceTest using Java 21.0.13.1 with PID 2052 (started by jenkins in /var/jenkins_home/workspace/integracion-continua-backend-orders-ci)
+[2026-11-24T04:24:20.022Z] 2026-11-24T04:24:19.901Z  INFO 2052 --- [orders] [           main] c.s.orders.service.InventoryServiceTest  : The following 1 profile is active: "test"
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:19.973Z  INFO 2052 --- [orders] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:19.980Z  INFO 2052 --- [orders] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 1 JPA repository interface.
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:19.990Z  INFO 2052 --- [orders] [           main] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:20.006Z  INFO 2052 --- [orders] [           main] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:fe5d4416-a6cb-4b79-8a5a-95a3923ca1a6;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:20.024Z  INFO 2052 --- [orders] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:20.026Z  INFO 2052 --- [orders] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:20.032Z  INFO 2052 --- [orders] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:20.062Z  INFO 2052 --- [orders] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+[2026-11-24T04:24:20.273Z] Hibernate: drop table if exists inventory cascade 
+[2026-11-24T04:24:20.273Z] Hibernate: create table inventory (quantity integer not null, sku varchar(64) not null, primary key (sku))
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:20.066Z  INFO 2052 --- [orders] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2026-11-24T04:24:20.273Z] 2026-11-24T04:24:20.102Z  INFO 2052 --- [orders] [           main] c.s.orders.service.InventoryServiceTest  : Started InventoryServiceTest in 0.224 seconds (process running for 4.61)
+[2026-11-24T04:24:20.273Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0
+[2026-11-24T04:24:20.273Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0 where ii1_0.sku=?
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0 where ii1_0.sku=?
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0 where ii1_0.sku=?
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0 where ii1_0.sku=?
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0 where ii1_0.sku=?
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0 where ii1_0.sku=?
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0
+[2026-11-24T04:24:20.525Z] Hibernate: select ii1_0.sku,ii1_0.quantity from inventory ii1_0 where ii1_0.sku=?
+[2026-11-24T04:24:20.525Z] [INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.477 s -- in com.stores.orders.service.InventoryServiceTest
+[2026-11-24T04:24:20.525Z] [INFO] Running com.stores.orders.service.OrderServiceTest
+[2026-11-24T04:24:20.525Z] [INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.158 s -- in com.stores.orders.service.OrderServiceTest
+[2026-11-24T04:24:20.525Z] [INFO] Running com.stores.orders.service.OrderCalculatorTest
+[2026-11-24T04:24:20.776Z] [INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.stores.orders.service.OrderCalculatorTest
+[2026-11-24T04:24:20.776Z] [INFO] Running com.stores.orders.web.OpenApiDocumentationTest
+[2026-11-24T04:24:20.776Z] 2026-11-24T04:24:20.530Z  INFO 2052 --- [orders] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.stores.orders.web.OpenApiDocumentationTest]: OpenApiDocumentationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+[2026-11-24T04:24:20.776Z] 2026-11-24T04:24:20.558Z  INFO 2052 --- [orders] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.stores.orders.OrdersApplication for test class com.stores.orders.web.OpenApiDocumentationTest
+[2026-11-24T04:24:20.776Z] 
+[2026-11-24T04:24:20.776Z]   .   ____          _            __ _ _
+[2026-11-24T04:24:20.776Z]  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+[2026-11-24T04:24:20.776Z] ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+[2026-11-24T04:24:20.776Z]  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+[2026-11-24T04:24:20.776Z]   '  |____| .__|_| |_|_| |_\__, | / / / /
+[2026-11-24T04:24:20.776Z]  =========|_|==============|___/=/_/_/_/
+[2026-11-24T04:24:20.776Z] 
+[2026-11-24T04:24:20.776Z]  :: Spring Boot ::                (v3.3.5)
+[2026-11-24T04:24:20.776Z] 
+[2026-11-24T04:24:20.776Z] 2026-11-24T04:24:20.604Z  INFO 2052 --- [orders] [           main] c.s.orders.web.OpenApiDocumentationTest  : Starting OpenApiDocumentationTest using Java 21.0.13.1 with PID 2052 (started by jenkins in /var/jenkins_home/workspace/integracion-continua-backend-orders-ci)
+[2026-11-24T04:24:20.776Z] 2026-11-24T04:24:20.604Z  INFO 2052 --- [orders] [           main] c.s.orders.web.OpenApiDocumentationTest  : The following 1 profile is active: "test"
+[2026-11-24T04:24:21.026Z] 2026-11-24T04:24:20.880Z  INFO 2052 --- [orders] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[2026-11-24T04:24:21.026Z] 2026-11-24T04:24:20.890Z  INFO 2052 --- [orders] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 8 ms. Found 1 JPA repository interface.
+[2026-11-24T04:24:21.277Z] 2026-11-24T04:24:21.081Z  INFO 2052 --- [orders] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 0 (http)
+[2026-11-24T04:24:21.277Z] 2026-11-24T04:24:21.094Z  INFO 2052 --- [orders] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+[2026-11-24T04:24:21.277Z] 2026-11-24T04:24:21.095Z  INFO 2052 --- [orders] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+[2026-11-24T04:24:21.277Z] 2026-11-24T04:24:21.143Z  INFO 2052 --- [orders] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+[2026-11-24T04:24:21.277Z] 2026-11-24T04:24:21.145Z  INFO 2052 --- [orders] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 538 ms
+[2026-11-24T04:24:21.277Z] 2026-11-24T04:24:21.209Z  INFO 2052 --- [orders] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+[2026-11-24T04:24:21.277Z] 2026-11-24T04:24:21.211Z  INFO 2052 --- [orders] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn21: url=jdbc:h2:mem:orders user=SA
+[2026-11-24T04:24:21.278Z] 2026-11-24T04:24:21.212Z  INFO 2052 --- [orders] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+[2026-11-24T04:24:21.278Z] 2026-11-24T04:24:21.230Z  INFO 2052 --- [orders] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+[2026-11-24T04:24:21.278Z] 2026-11-24T04:24:21.232Z  INFO 2052 --- [orders] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+[2026-11-24T04:24:21.278Z] 2026-11-24T04:24:21.240Z  INFO 2052 --- [orders] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+[2026-11-24T04:24:21.528Z] 2026-11-24T04:24:21.275Z  INFO 2052 --- [orders] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+[2026-11-24T04:24:21.528Z] 2026-11-24T04:24:21.278Z  INFO 2052 --- [orders] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+[2026-11-24T04:24:21.779Z] 2026-11-24T04:24:21.525Z  INFO 2052 --- [orders] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 35983 (http) with context path '/'
+[2026-11-24T04:24:21.779Z] 2026-11-24T04:24:21.530Z  INFO 2052 --- [orders] [           main] c.s.orders.web.OpenApiDocumentationTest  : Started OpenApiDocumentationTest in 0.966 seconds (process running for 6.038)
+[2026-11-24T04:24:21.779Z] 2026-11-24T04:24:21.613Z  INFO 2052 --- [orders] [o-auto-1-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2026-11-24T04:24:21.779Z] 2026-11-24T04:24:21.614Z  INFO 2052 --- [orders] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+[2026-11-24T04:24:21.779Z] 2026-11-24T04:24:21.615Z  INFO 2052 --- [orders] [o-auto-1-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+[2026-11-24T04:24:22.030Z] 2026-11-24T04:24:21.957Z  INFO 2052 --- [orders] [o-auto-1-exec-4] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 255 ms
+[2026-11-24T04:24:22.030Z] [INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.464 s -- in com.stores.orders.web.OpenApiDocumentationTest
+[2026-11-24T04:24:22.032Z] [INFO] Running com.stores.orders.web.OrderControllerTest
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:21.997Z  INFO 2052 --- [orders] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.stores.orders.web.OrderControllerTest]: OrderControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.009Z  INFO 2052 --- [orders] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.stores.orders.OrdersApplication for test class com.stores.orders.web.OrderControllerTest
+[2026-11-24T04:24:22.285Z] 
+[2026-11-24T04:24:22.285Z]   .   ____          _            __ _ _
+[2026-11-24T04:24:22.285Z]  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+[2026-11-24T04:24:22.285Z] ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+[2026-11-24T04:24:22.285Z]  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+[2026-11-24T04:24:22.285Z]   '  |____| .__|_| |_|_| |_\__, | / / / /
+[2026-11-24T04:24:22.285Z]  =========|_|==============|___/=/_/_/_/
+[2026-11-24T04:24:22.285Z] 
+[2026-11-24T04:24:22.285Z]  :: Spring Boot ::                (v3.3.5)
+[2026-11-24T04:24:22.285Z] 
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.035Z  INFO 2052 --- [orders] [           main] c.stores.orders.web.OrderControllerTest  : Starting OrderControllerTest using Java 21.0.13.1 with PID 2052 (started by jenkins in /var/jenkins_home/workspace/integracion-continua-backend-orders-ci)
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.035Z DEBUG 2052 --- [orders] [           main] c.stores.orders.web.OrderControllerTest  : Running with Spring Boot v3.3.5, Spring v6.1.14
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.036Z  INFO 2052 --- [orders] [           main] c.stores.orders.web.OrderControllerTest  : The following 1 profile is active: "dev"
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.256Z  INFO 2052 --- [orders] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.257Z  INFO 2052 --- [orders] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.257Z  INFO 2052 --- [orders] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+[2026-11-24T04:24:22.285Z] 2026-11-24T04:24:22.263Z  INFO 2052 --- [orders] [           main] c.stores.orders.web.OrderControllerTest  : Started OrderControllerTest in 0.25 seconds (process running for 6.771)
+[2026-11-24T04:24:22.536Z] [INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.357 s -- in com.stores.orders.web.OrderControllerTest
+[2026-11-24T04:24:22.536Z] [INFO] 
+[2026-11-24T04:24:22.536Z] [INFO] Results:
+[2026-11-24T04:24:22.536Z] [INFO] 
+[2026-11-24T04:24:22.536Z] [INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0
+[2026-11-24T04:24:22.536Z] [INFO] 
+[2026-11-24T04:24:22.536Z] [INFO] ------------------------------------------------------------------------
+[2026-11-24T04:24:22.536Z] [INFO] BUILD SUCCESS
+[2026-11-24T04:24:22.536Z] [INFO] ------------------------------------------------------------------------
+[2026-11-24T04:24:22.536Z] [INFO] Total time:  8.949 s
+[2026-11-24T04:24:22.536Z] [INFO] Finished at: 2026-11-24T04:24:22Z
+[2026-11-24T04:24:22.536Z] [INFO] ------------------------------------------------------------------------
+Post stage
+[Pipeline] junit
+[2026-11-24T04:24:22.555Z] Recording test results
+[2026-11-24T04:24:22.574Z] [Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Package)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2026-11-24T04:24:23.045Z] + mvn -B package -DskipTests
+[2026-11-24T04:24:23.956Z] [INFO] Scanning for projects...
+[2026-11-24T04:24:24.207Z] [INFO] 
+[2026-11-24T04:24:24.207Z] [INFO] -------------------------< com.stores:orders >--------------------------
+[2026-11-24T04:24:24.207Z] [INFO] Building orders 0.0.3-RC
+[2026-11-24T04:24:24.207Z] [INFO]   from pom.xml
+[2026-11-24T04:24:24.207Z] [INFO] --------------------------------[ jar ]---------------------------------
+[2026-11-24T04:24:24.457Z] [INFO] 
+[2026-11-24T04:24:24.457Z] [INFO] --- resources:3.3.1:resources (default-resources) @ orders ---
+[2026-11-24T04:24:24.457Z] [INFO] Copying 4 resources from src/main/resources to target/classes
+[2026-11-24T04:24:24.708Z] [INFO] Copying 1 resource from src/main/resources to target/classes
+[2026-11-24T04:24:24.708Z] [INFO] 
+[2026-11-24T04:24:24.708Z] [INFO] --- compiler:3.13.0:compile (default-compile) @ orders ---
+[2026-11-24T04:24:24.708Z] [INFO] Nothing to compile - all classes are up to date.
+[2026-11-24T04:24:24.708Z] [INFO] 
+[2026-11-24T04:24:24.708Z] [INFO] --- resources:3.3.1:testResources (default-testResources) @ orders ---
+[2026-11-24T04:24:24.708Z] [INFO] skip non existing resourceDirectory /var/jenkins_home/workspace/integracion-continua-backend-orders-ci/src/test/resources
+[2026-11-24T04:24:24.708Z] [INFO] 
+[2026-11-24T04:24:24.708Z] [INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ orders ---
+[2026-11-24T04:24:24.708Z] [INFO] Nothing to compile - all classes are up to date.
+[2026-11-24T04:24:24.708Z] [INFO] 
+[2026-11-24T04:24:24.708Z] [INFO] --- surefire:3.2.5:test (default-test) @ orders ---
+[2026-11-24T04:24:24.708Z] [INFO] Tests are skipped.
+[2026-11-24T04:24:24.708Z] [INFO] 
+[2026-11-24T04:24:24.708Z] [INFO] --- jar:3.4.2:jar (default-jar) @ orders ---
+[2026-11-24T04:24:24.959Z] [INFO] Building jar: /var/jenkins_home/workspace/integracion-continua-backend-orders-ci/target/orders.jar
+[2026-11-24T04:24:24.959Z] [INFO] 
+[2026-11-24T04:24:24.959Z] [INFO] --- spring-boot:3.3.5:repackage (repackage) @ orders ---
+[2026-11-24T04:24:25.510Z] [INFO] Replacing main artifact /var/jenkins_home/workspace/integracion-continua-backend-orders-ci/target/orders.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[2026-11-24T04:24:25.510Z] [INFO] The original artifact has been renamed to /var/jenkins_home/workspace/integracion-continua-backend-orders-ci/target/orders.jar.original
+[2026-11-24T04:24:25.510Z] [INFO] ------------------------------------------------------------------------
+[2026-11-24T04:24:25.510Z] [INFO] BUILD SUCCESS
+[2026-11-24T04:24:25.510Z] [INFO] ------------------------------------------------------------------------
+[2026-11-24T04:24:25.510Z] [INFO] Total time:  1.477 s
+[2026-11-24T04:24:25.510Z] [INFO] Finished at: 2026-11-24T04:24:25Z
+[2026-11-24T04:24:25.510Z] [INFO] ------------------------------------------------------------------------
+[Pipeline] archiveArtifacts
+[2026-11-24T04:24:25.530Z] Archiving artifacts
+[2026-11-24T04:24:25.550Z] Recording fingerprints
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Docker Build)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[2026-11-24T04:24:26.069Z] + docker build -t orders-ci:4 -t orders-ci:latest .
+[2026-11-24T04:24:26.320Z] #0 building with "default" instance using docker driver
+[2026-11-24T04:24:26.320Z] 
+[2026-11-24T04:24:26.320Z] #1 [internal] load build definition from Dockerfile
+[2026-11-24T04:24:26.320Z] #1 transferring dockerfile: 1.24kB done
+[2026-11-24T04:24:26.320Z] #1 DONE 0.0s
+[2026-11-24T04:24:26.320Z] 
+[2026-11-24T04:24:26.320Z] #2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+[2026-11-24T04:24:26.320Z] #2 DONE 0.3s
+[2026-11-24T04:24:26.570Z] 
+[2026-11-24T04:24:26.570Z] #3 docker-image://docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183
+[2026-11-24T04:24:26.570Z] #3 resolve docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183 0.0s done
+[2026-11-24T04:24:26.570Z] #3 CACHED
+[2026-11-24T04:24:26.570Z] 
+[2026-11-24T04:24:26.570Z] #4 [internal] load metadata for docker.io/library/maven:3.9-eclipse-temurin-21
+[2026-11-24T04:24:26.821Z] #4 DONE 0.3s
+[2026-11-24T04:24:26.821Z] 
+[2026-11-24T04:24:26.821Z] #5 [internal] load metadata for docker.io/library/eclipse-temurin:21-jre-alpine
+[2026-11-24T04:24:27.072Z] #5 DONE 0.3s
+[2026-11-24T04:24:27.072Z] 
+[2026-11-24T04:24:27.072Z] #6 [internal] load .dockerignore
+[2026-11-24T04:24:27.072Z] #6 transferring context: 93B done
+[2026-11-24T04:24:27.072Z] #6 DONE 0.0s
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #7 [runtime 1/4] FROM docker.io/library/eclipse-temurin:21-jre-alpine@sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70
+[2026-11-24T04:24:27.322Z] #7 resolve docker.io/library/eclipse-temurin:21-jre-alpine@sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70 0.0s done
+[2026-11-24T04:24:27.322Z] #7 DONE 0.0s
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #8 [tests 1/5] FROM docker.io/library/maven:3.9-eclipse-temurin-21@sha256:99e61abcff91a9b1333463bd8451fb18495d6eba9250ac66a338b518f8278320
+[2026-11-24T04:24:27.322Z] #8 resolve docker.io/library/maven:3.9-eclipse-temurin-21@sha256:99e61abcff91a9b1333463bd8451fb18495d6eba9250ac66a338b518f8278320 0.0s done
+[2026-11-24T04:24:27.322Z] #8 DONE 0.0s
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #9 [internal] load build context
+[2026-11-24T04:24:27.322Z] #9 transferring context: 2.92kB done
+[2026-11-24T04:24:27.322Z] #9 DONE 0.0s
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #10 [runtime 2/4] WORKDIR /app
+[2026-11-24T04:24:27.322Z] #10 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #11 [tests 3/5] COPY pom.xml .
+[2026-11-24T04:24:27.322Z] #11 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #12 [build 1/1] RUN mvn -B -q package -DskipTests
+[2026-11-24T04:24:27.322Z] #12 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #13 [runtime 3/4] RUN addgroup -S app && adduser -S app -G app
+[2026-11-24T04:24:27.322Z] #13 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #14 [tests 4/5] RUN mvn -B -q dependency:go-offline
+[2026-11-24T04:24:27.322Z] #14 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #15 [tests 2/5] WORKDIR /app
+[2026-11-24T04:24:27.322Z] #15 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #16 [tests 5/5] COPY src ./src
+[2026-11-24T04:24:27.322Z] #16 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #17 [runtime 4/4] COPY --from=build /app/target/orders.jar app.jar
+[2026-11-24T04:24:27.322Z] #17 CACHED
+[2026-11-24T04:24:27.322Z] 
+[2026-11-24T04:24:27.322Z] #18 exporting to image
+[2026-11-24T04:24:27.322Z] #18 exporting layers done
+[2026-11-24T04:24:27.322Z] #18 exporting manifest sha256:ef95b74c22eb3bb9876a7b8f06d84f85b813df5be8aa7985adb2db7d233db5c6 done
+[2026-11-24T04:24:27.322Z] #18 exporting config sha256:fa69df0f647757f78dd535a0e32fa67698ca77464b60a3bd6e731b904945cc9a done
+[2026-11-24T04:24:27.322Z] #18 exporting attestation manifest sha256:09e775fd1f3ca183ead0ca5e84e65bb4b0e749042fec79fd994d2354b751795f 0.0s done
+[2026-11-24T04:24:27.322Z] #18 exporting manifest list sha256:43ce5e39d017eb341a152a5d5e5f59719fbdf0180677d15d9a68337a83cf43c4 0.0s done
+[2026-11-24T04:24:27.322Z] #18 naming to docker.io/library/orders-ci:4 done
+[2026-11-24T04:24:27.322Z] #18 unpacking to docker.io/library/orders-ci:4 done
+[2026-11-24T04:24:27.322Z] #18 naming to docker.io/library/orders-ci:latest done
+[2026-11-24T04:24:27.322Z] #18 unpacking to docker.io/library/orders-ci:latest done
+[2026-11-24T04:24:27.322Z] #18 DONE 0.1s
+[2026-11-24T04:24:27.573Z] + docker images orders-ci
+[2026-11-24T04:24:27.573Z] IMAGE              ID             DISK USAGE   CONTENT SIZE   EXTRA
+[2026-11-24T04:24:27.573Z] orders-ci:1        f66a5ad8f715        394MB          124MB        
+[2026-11-24T04:24:27.573Z] orders-ci:2        d7befc0146d1        393MB          123MB        
+[2026-11-24T04:24:27.573Z] orders-ci:3        6d4f1c6e3dcc        393MB          123MB        
+[2026-11-24T04:24:27.573Z] orders-ci:4        43ce5e39d017        393MB          123MB        
+[2026-11-24T04:24:27.573Z] orders-ci:latest   43ce5e39d017        393MB          123MB        
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+[2026-11-24T04:24:27.672Z] ✅ Pipeline exitoso
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

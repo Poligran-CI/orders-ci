@@ -1,0 +1,49 @@
+{
+    "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+    "actions": [
+        {
+            "_class": "hudson.model.CauseAction",
+            "causes": [
+                {
+                    "_class": "com.cloudbees.jenkins.GitHubPushCause",
+                    "shortDescription": "Started by GitHub push by SebastianArevalo94"
+                }
+            ]
+        },
+        {},
+        {
+            "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+        },
+        {},
+        {
+            "_class": "hudson.plugins.git.util.BuildData"
+        },
+        {},
+        {
+            "_class": "hudson.tasks.junit.TestResultAction"
+        },
+        {},
+        {
+            "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+        },
+        {},
+        {},
+        {},
+        {
+            "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+        },
+        {
+            "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+        },
+        {},
+        {
+            "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+        },
+        {},
+        {}
+    ],
+    "duration": 21100,
+    "number": 4,
+    "result": "SUCCESS",
+    "timestamp": 1795494246770
+}
