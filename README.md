@@ -172,7 +172,9 @@ docker compose up -d --build          # builds orders-app and starts db + api
 docker compose ps                     # wait until both services show "healthy" (~20 s)
 ```
 
-Try the API (each command shows the expected response):
+Try the API (each command shows the expected response). The commands use port `8080`, the
+default `API_PORT`; if you changed `API_PORT` in `.env` (for example because Jenkins already uses
+8080), replace `8080` with that port in every URL below:
 
 ```bash
 # Active environment
@@ -223,7 +225,8 @@ Useful commands:
 ### 3) See the containers in Docker Desktop
 
 - **Containers**: group **`orders-ci`** with `orders-ci-db-1` (PostgreSQL) and `orders-ci-api-1`
-  (API). Clicking one shows its **Logs**, **Inspect** (environment variables, network) and **Exec**
+  (API). The prefix is the name of the folder that contains the repository (Compose project name):
+  a clone in `my-copy/` shows `my-copy-db-1` and `my-copy-api-1`. Clicking one shows its **Logs**, **Inspect** (environment variables, network) and **Exec**
   (a terminal inside the container). The `8080:8080` link on `api` opens the API in the browser.
   While the automated tests run, `orders-tests-ctr` appears briefly.
 - **Images**: `orders-app`, `orders-tests`, `postgres:16-alpine`.
@@ -239,7 +242,8 @@ Useful commands:
 | `trying to overwrite '/usr/libexec/docker/cli-plugins/docker-compose', which is also in package docker-compose-v2` (installing Docker Desktop) | Ubuntu's `docker-compose-v2` and Docker's `docker-compose-plugin` ship the same file | `sudo apt-get remove -y docker-compose-v2 && sudo apt-get install -f -y` |
 | `Connection to localhost:5432 refused` | API image run alone (`docker run ... orders-app`): inside a container `localhost` is the container itself | Use `docker compose up` (the API reaches the database at `db:5432`) |
 | `Set DB_USER in .env` | `.env` missing | `cp .env.example .env` |
-| `Bind for 0.0.0.0:8080 failed: port is already allocated` | Something else uses port 8080 | Stop it, or set `API_PORT=8081` in `.env` |
+| `Bind for 0.0.0.0:8080 failed: port is already allocated` | Something else uses port 8080 (for example the Jenkins container of this repository, which also publishes 8080) | Stop it, or set a free port in `.env` (e.g. `API_PORT=8090`) and use that port in the `curl` commands and the browser |
+| `mounts denied: The path .../db/init is not shared from the host and is not known to Docker` | Docker Desktop only shares the home folder by default; the repository was cloned elsewhere (e.g. under `/tmp`) | Clone the repository inside your home folder, or add its path in Docker Desktop → **Settings → Resources → File sharing** |
 | Orders answer `409` for every SKU | `inventory` empty (volume created before the init script) | `docker compose down -v && docker compose up -d` |
 
 Execution results and the incidents found while testing: [`docs/DOCKER_INCIDENCIAS.md`](docs/DOCKER_INCIDENCIAS.md).
