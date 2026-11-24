@@ -1,0 +1,22 @@
+# Override used only by the Jenkins pipeline:
+#   docker compose -f docker-compose.yml -f docker-compose.ci.yml ...
+# Jenkins runs in a container and drives the host Docker engine through its socket, so:
+#  - a bind mount (./db/init) would be resolved on the host, where the Jenkins workspace
+#    does not exist; the init scripts are copied into a derived image instead;
+#  - no host port is published (8080 belongs to Jenkins); the example operation is
+#    executed inside the compose network (scripts/verificar_operacion.sh).
+# Each build uses its own project name (orders-ci-<build>), network, volume and image tags.
+services:
+  db:
+    build:
+      context: ./db
+      dockerfile_inline: |
+        FROM postgres:16-alpine
+        COPY init/ /docker-entrypoint-initdb.d/
+    image: orders-db-ci:${IMAGE_TAG:-local}
+    volumes: !override
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    image: orders-app:${IMAGE_TAG:-local}
+    ports: !reset []

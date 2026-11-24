@@ -244,6 +244,31 @@ Useful commands:
 
 Execution results and the incidents found while testing: [`docs/DOCKER_INCIDENCIAS.md`](docs/DOCKER_INCIDENCIAS.md).
 
+## Continuous integration with Jenkins
+
+Jenkins runs in a container (configuration as code: `jenkins/`) and polls `master` every
+2 minutes (Poll SCM). On each new commit the `Jenkinsfile` runs these stages:
+
+| Stage | What it does |
+|---|---|
+| Obtener código | `checkout scm` from GitHub |
+| Pruebas unitarias | `mvn -B test` + JUnit report |
+| Construir imagen | `docker compose build` (API image + PostgreSQL image with the init scripts) |
+| Levantar contenedores | `docker compose up -d --wait` (both services healthy) |
+| Operación de ejemplo | `scripts/verificar_operacion.sh`: `POST /api/orders/total` must return `total` 144000.00, otherwise the build fails |
+| *(post, always)* | `docker compose down --volumes --rmi all`, also when the build fails |
+
+The pipeline uses `docker-compose.yml` plus `docker-compose.ci.yml` (no host port, init scripts baked
+into the image, one project per build).
+
+```bash
+cp .env.example .env    # set JENKINS_ADMIN_PASSWORD, DB_USER, DB_PASSWORD and DOCKER_GID
+docker compose --env-file .env -f jenkins/docker-compose.yml up -d --build
+# http://localhost:8080  (user: admin)
+```
+
+`--env-file .env` is required so that `DOCKER_GID` is applied (access to the Docker socket).
+
 ## Environments
 
 A single image; the environment is selected with `SPRING_PROFILES_ACTIVE` (`dev`, `test`, `prod`).

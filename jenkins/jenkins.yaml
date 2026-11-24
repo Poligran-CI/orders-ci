@@ -1,5 +1,6 @@
 jenkins:
   systemMessage: Jenkins configurado como codigo con JCasC
+  numExecutors: 2
   securityRealm:
     local:
       allowsSignup: false
@@ -17,11 +18,14 @@ credentials:
   system:
     domainCredentials:
       - credentials:
-          - string:
+          # Usuario y contraseña de la base de datos de los contenedores de prueba.
+          # Se toman de DB_USER y DB_PASSWORD del archivo .env (no versionado).
+          - usernamePassword:
               scope: GLOBAL
-              id: github-token
-              description: Token de GitHub para el repo orders-ci
-              secret: ${GITHUB_TOKEN}
+              id: orders-db
+              description: Credenciales de PostgreSQL para los contenedores del pipeline
+              username: ${DB_USER}
+              password: ${DB_PASSWORD}
 
 tool:
   jdk:
@@ -35,7 +39,6 @@ tool:
 
 jobs:
   - script: |
-      def webhookMode = (System.getenv('USE_GITHUB_WEBHOOK') ?: 'false').toBoolean()
       // Branch to build; defaults to master (override with JENKINS_BRANCH in .env)
       def buildBranch = System.getenv('JENKINS_BRANCH') ?: '*/master'
 
@@ -44,12 +47,9 @@ jobs:
         properties {
           pipelineTriggers {
             triggers {
-              if (webhookMode) {
-                githubPush()
-              } else {
-                pollSCM {
-                  scmpoll_spec('H/2 * * * *')
-                }
+              // Poll SCM: consulta GitHub cada 2 minutos y construye si hay commits nuevos.
+              pollSCM {
+                scmpoll_spec('H/2 * * * *')
               }
             }
           }
@@ -59,7 +59,6 @@ jobs:
             scm {
               git {
                 remote {
-                  // Canonical repo URL: the GitHub plugin matches webhook payloads against it
                   url('https://github.com/Poligran-CI/orders-ci')
                 }
                 branch(buildBranch)
