@@ -1,0 +1,135 @@
+{
+    "_links": {
+        "self": {
+            "href": "/job/integracion-continua-backend-orders-ci/4/wfapi/describe"
+        },
+        "changesets": {
+            "href": "/job/integracion-continua-backend-orders-ci/4/wfapi/changesets"
+        },
+        "artifacts": {
+            "href": "/job/integracion-continua-backend-orders-ci/4/wfapi/artifacts"
+        }
+    },
+    "id": "4",
+    "name": "#4",
+    "status": "SUCCESS",
+    "startTimeMillis": 1795494246774,
+    "endTimeMillis": 1795494267874,
+    "durationMillis": 21100,
+    "queueDurationMillis": 4,
+    "pauseDurationMillis": 0,
+    "stages": [
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/6/wfapi/describe"
+                }
+            },
+            "id": "6",
+            "name": "Declarative: Checkout SCM",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494247637,
+            "durationMillis": 672,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/17/wfapi/describe"
+                }
+            },
+            "id": "17",
+            "name": "Declarative: Tool Install",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494248400,
+            "durationMillis": 122,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/27/wfapi/describe"
+                }
+            },
+            "id": "27",
+            "name": "Verify version",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494248565,
+            "durationMillis": 985,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/42/wfapi/describe"
+                }
+            },
+            "id": "42",
+            "name": "Build",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494249566,
+            "durationMillis": 2805,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/55/wfapi/describe"
+                }
+            },
+            "id": "55",
+            "name": "Test",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494252387,
+            "durationMillis": 10237,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/69/wfapi/describe"
+                }
+            },
+            "id": "69",
+            "name": "Package",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494262641,
+            "durationMillis": 3026,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/83/wfapi/describe"
+                }
+            },
+            "id": "83",
+            "name": "Docker Build",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494265684,
+            "durationMillis": 1935,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/4/execution/node/96/wfapi/describe"
+                }
+            },
+            "id": "96",
+            "name": "Declarative: Post Actions",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795494267638,
+            "durationMillis": 62,
+            "pauseDurationMillis": 0
+        }
+    ]
+}

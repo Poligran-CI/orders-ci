@@ -1,0 +1,195 @@
+{
+    "_class": "hudson.tasks.junit.TestResult",
+    "duration": 5.62,
+    "failCount": 0,
+    "passCount": 25,
+    "skipCount": 0,
+    "suites": [
+        {
+            "cases": [
+                {
+                    "className": "com.stores.orders.OrdersApplicationTests",
+                    "duration": 0.377,
+                    "name": "springContextStarts",
+                    "status": "PASSED"
+                }
+            ],
+            "duration": 3.33,
+            "name": "com.stores.orders.OrdersApplicationTests"
+        },
+        {
+            "cases": [
+                {
+                    "className": "com.stores.orders.service.InventoryServiceTest",
+                    "duration": 0.166,
+                    "name": "IN03_hasNoStockWhenQuantityExceedsInventory",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.InventoryServiceTest",
+                    "duration": 0.007,
+                    "name": "IN02_hasStockWhenQuantityEqualsInventory",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.InventoryServiceTest",
+                    "duration": 0.007,
+                    "name": "IN01_hasStockWhenQuantityIsLessThanInventory",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.InventoryServiceTest",
+                    "duration": 0.012,
+                    "name": "IN06_decrementingMoreThanAvailableThrowsAndKeepsInventory",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.InventoryServiceTest",
+                    "duration": 0.006,
+                    "name": "IN04_unknownSkuHasNoStock",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.InventoryServiceTest",
+                    "duration": 0.007,
+                    "name": "IN05_decrementReducesStock",
+                    "status": "PASSED"
+                }
+            ],
+            "duration": 0.442,
+            "name": "com.stores.orders.service.InventoryServiceTest"
+        },
+        {
+            "cases": [
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.002,
+                    "name": "CP03_percentageDiscountIsAppliedOverSubtotal",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.002,
+                    "name": "CP09_orderWithoutItemsIsRejected",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.001,
+                    "name": "CP04_discountIsNotAppliedTwiceToTheSameOrder_reproducesCaseBug",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.001,
+                    "name": "CP02_withoutDiscountTotalEqualsSubtotal",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.001,
+                    "name": "CP01_subtotalAddsQuantityTimesPriceOfEachItem",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.0,
+                    "name": "CP08_resultIsRoundedToTwoDecimals",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.001,
+                    "name": "CP07_negativeDiscountIsRejected",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.003,
+                    "name": "CP05_hundredPercentDiscountLeavesTotalAtZeroAndNeverNegative",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderCalculatorTest",
+                    "duration": 0.001,
+                    "name": "CP06_discountGreaterThan100IsRejected",
+                    "status": "PASSED"
+                }
+            ],
+            "duration": 0.018,
+            "name": "com.stores.orders.service.OrderCalculatorTest"
+        },
+        {
+            "cases": [
+                {
+                    "className": "com.stores.orders.service.OrderServiceTest",
+                    "duration": 0.143,
+                    "name": "PS04_processingAnOrderDoesNotModifyInventory",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderServiceTest",
+                    "duration": 0.004,
+                    "name": "PS01_calculatesSubtotalDiscountAndTotalWhenStockIsAvailable",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderServiceTest",
+                    "duration": 0.003,
+                    "name": "PS03_sumsQuantitiesWhenTheSameSkuAppearsSeveralTimes",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.service.OrderServiceTest",
+                    "duration": 0.002,
+                    "name": "PS02_rejectsOrderWhenAnyItemExceedsStock",
+                    "status": "PASSED"
+                }
+            ],
+            "duration": 0.157,
+            "name": "com.stores.orders.service.OrderServiceTest"
+        },
+        {
+            "cases": [
+                {
+                    "className": "com.stores.orders.web.OpenApiDocumentationTest",
+                    "duration": 0.135,
+                    "name": "swaggerUiIsAvailable",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.web.OpenApiDocumentationTest",
+                    "duration": 0.269,
+                    "name": "exposesOpenApiContractWithAllEndpoints",
+                    "status": "PASSED"
+                }
+            ],
+            "duration": 1.413,
+            "name": "com.stores.orders.web.OpenApiDocumentationTest"
+        },
+        {
+            "cases": [
+                {
+                    "className": "com.stores.orders.web.OrderControllerTest",
+                    "duration": 0.054,
+                    "name": "WE03_returns400WhenDataIsInvalid",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.web.OrderControllerTest",
+                    "duration": 0.005,
+                    "name": "WE02_returns409WhenThereIsNoStock",
+                    "status": "PASSED"
+                },
+                {
+                    "className": "com.stores.orders.web.OrderControllerTest",
+                    "duration": 0.007,
+                    "name": "WE01_returns200WithSubtotalDiscountAndTotal",
+                    "status": "PASSED"
+                }
+            ],
+            "duration": 0.26,
+            "name": "com.stores.orders.web.OrderControllerTest"
+        }
+    ]
+}

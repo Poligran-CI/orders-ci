@@ -1,0 +1,25 @@
+=== 2026-11-23 22:13:58 -05 | scm-polling.log
+Started on Nov 24, 2026, 3:13:00 AM
+Using strategy: Default
+[poll] Last Built Revision: Revision ee131396e0ffe1ad15e35c2b6b6f9293a2f65a57 (refs/remotes/origin/master)
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git ls-remote -h -- https://github.com/Velasquez076/orders-ci # timeout=10
+Found 10 remote heads on https://github.com/Velasquez076/orders-ci
+[poll] Latest remote head revision on refs/heads/master is: ee131396e0ffe1ad15e35c2b6b6f9293a2f65a57 - already built by 1
+Done. Took 0.47 sec
+No changes
+
+=== docker images orders-ci (motor Docker Desktop)
+IMAGE              ID             DISK USAGE   CONTENT SIZE   EXTRA
+orders-ci:1        f66a5ad8f715        394MB          124MB        
+orders-ci:latest   f66a5ad8f715        394MB          124MB        
+
+=== 2026-11-23 22:18:02 -05 | despues de la ejecucion #2
+IMAGE              ID             DISK USAGE   CONTENT SIZE   EXTRA
+orders-ci:1        f66a5ad8f715        394MB          124MB        
+orders-ci:2        d7befc0146d1        393MB          123MB        
+orders-ci:latest   d7befc0146d1        393MB          123MB        

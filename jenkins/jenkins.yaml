@@ -36,9 +36,11 @@ tool:
 jobs:
   - script: |
       def webhookMode = (System.getenv('USE_GITHUB_WEBHOOK') ?: 'false').toBoolean()
+      // Branch to build; defaults to master (override with JENKINS_BRANCH in .env)
+      def buildBranch = System.getenv('JENKINS_BRANCH') ?: '*/master'
 
       pipelineJob('integracion-continua-backend-orders-ci') {
-        description('Pipeline de integracion continua para orders-ci (rama master)')
+        description('Pipeline de integracion continua para orders-ci (rama ' + buildBranch + ')')
         properties {
           pipelineTriggers {
             triggers {
@@ -57,9 +59,10 @@ jobs:
             scm {
               git {
                 remote {
-                  url('https://github.com/Velasquez076/orders-ci')
+                  // Canonical repo URL: the GitHub plugin matches webhook payloads against it
+                  url('https://github.com/Poligran-CI/orders-ci')
                 }
-                branch('*/master')
+                branch(buildBranch)
               }
             }
             scriptPath('Jenkinsfile')

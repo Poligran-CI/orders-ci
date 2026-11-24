@@ -1,0 +1,53 @@
+{
+    "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+    "actions": [
+        {
+            "_class": "hudson.model.CauseAction",
+            "causes": [
+                {
+                    "_class": "hudson.model.Cause$UserIdCause",
+                    "shortDescription": "Started by user Admin"
+                }
+            ]
+        },
+        {
+            "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+        },
+        {},
+        {
+            "_class": "hudson.plugins.git.util.BuildData"
+        },
+        {},
+        {
+            "_class": "hudson.tasks.junit.TestResultAction"
+        },
+        {},
+        {
+            "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+        },
+        {},
+        {},
+        {},
+        {
+            "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+        },
+        {
+            "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+        },
+        {},
+        {
+            "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+        },
+        {},
+        {}
+    ],
+    "artifacts": [
+        {
+            "fileName": "orders.jar"
+        }
+    ],
+    "duration": 133509,
+    "number": 2,
+    "result": "SUCCESS",
+    "timestamp": 1795490134323
+}

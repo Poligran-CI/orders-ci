@@ -1,0 +1,121 @@
+=== 2026-11-23 21:07:42 -05 | etapa Docker Build (copia HEAD) ===
+Docker version 29.9.3, build 5457199
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.24kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.2s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183
+#3 resolve docker.io/docker/dockerfile:1@sha256:572cebbc2b15e6f84c077742952674889cb63cd5e9b80abdffcbe587b6f19183 0.0s done
+#3 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 0B / 15.19MB 0.2s
+#3 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 1.05MB / 15.19MB 0.3s
+#3 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 9.44MB / 15.19MB 0.5s
+#3 sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 15.19MB / 15.19MB 0.5s done
+#3 extracting sha256:03f648a05b5780c2a0e4b43c93eb1838c6b9b32131b25f4199f42a788d106315 0.1s done
+#3 DONE 0.6s
+
+#4 [internal] load metadata for docker.io/library/maven:3.9-eclipse-temurin-21
+#4 DONE 0.5s
+
+#5 [internal] load metadata for docker.io/library/eclipse-temurin:21-jre-alpine
+#5 DONE 1.2s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 93B done
+#6 DONE 0.0s
+
+#7 [tests 1/5] FROM docker.io/library/maven:3.9-eclipse-temurin-21@sha256:99e61abcff91a9b1333463bd8451fb18495d6eba9250ac66a338b518f8278320
+#7 resolve docker.io/library/maven:3.9-eclipse-temurin-21@sha256:99e61abcff91a9b1333463bd8451fb18495d6eba9250ac66a338b518f8278320 0.0s done
+#7 DONE 0.0s
+
+#8 [runtime 1/4] FROM docker.io/library/eclipse-temurin:21-jre-alpine@sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70
+#8 resolve docker.io/library/eclipse-temurin:21-jre-alpine@sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70 0.0s done
+#8 ...
+
+#9 [internal] load build context
+#9 transferring context: 34.83kB done
+#9 DONE 0.0s
+
+#10 [tests 2/5] WORKDIR /app
+#10 CACHED
+
+#11 [tests 3/5] COPY pom.xml .
+#11 DONE 0.0s
+
+#8 [runtime 1/4] FROM docker.io/library/eclipse-temurin:21-jre-alpine@sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70
+#8 sha256:2db787ed6893691295d0621cc1eef284322e32579d35485522037222b0656ad6 2.46kB / 2.46kB 0.1s done
+#8 sha256:7c3a5aabfc1c1e68cd531da3cbb8ebaaafc5555be34c42d4b28a6c8759d6f17b 127B / 127B 0.2s done
+#8 sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 0B / 53.39MB 0.3s
+#8 sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda 0B / 19.45MB 0.2s
+#8 sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 8.39MB / 53.39MB 0.6s
+#8 sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 11.53MB / 53.39MB 0.8s
+#8 sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda 1.05MB / 19.45MB 0.6s
+#8 sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 26.21MB / 53.39MB 0.9s
+#8 sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda 2.10MB / 19.45MB 0.8s
+#8 sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 37.75MB / 53.39MB 1.1s
+#8 sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda 5.24MB / 19.45MB 0.9s
+#8 sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 51.38MB / 53.39MB 1.2s
+#8 sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda 11.53MB / 19.45MB 1.1s
+#8 sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 53.39MB / 53.39MB 1.3s done
+#8 sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda 19.45MB / 19.45MB 1.3s done
+#8 extracting sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda
+#8 extracting sha256:cb99678e5a4c511e3ce1704bb2dab11f55fdcb4884a6cb5f7f1d0331af55ebda 0.3s done
+#8 DONE 1.7s
+
+#12 [tests 4/5] RUN mvn -B -q dependency:go-offline
+#12 ...
+
+#8 [runtime 1/4] FROM docker.io/library/eclipse-temurin:21-jre-alpine@sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70
+#8 extracting sha256:89406ef15e5060d1ed62be38f450c33ae6a7bee6e62288d1224878fb28ecee15 0.6s done
+#8 DONE 2.3s
+
+#8 [runtime 1/4] FROM docker.io/library/eclipse-temurin:21-jre-alpine@sha256:5d7689f47d670aca766b9503a70bccc2d73b4eb9221ae8f714ae958313c4ce70
+#8 extracting sha256:7c3a5aabfc1c1e68cd531da3cbb8ebaaafc5555be34c42d4b28a6c8759d6f17b 0.0s done
+#8 extracting sha256:2db787ed6893691295d0621cc1eef284322e32579d35485522037222b0656ad6 0.0s done
+#8 DONE 2.3s
+
+#13 [runtime 2/4] WORKDIR /app
+#13 DONE 0.2s
+
+#12 [tests 4/5] RUN mvn -B -q dependency:go-offline
+#12 ...
+
+#14 [runtime 3/4] RUN addgroup -S app && adduser -S app -G app
+#14 DONE 0.1s
+
+#12 [tests 4/5] RUN mvn -B -q dependency:go-offline
+#12 DONE 772.7s
+
+#15 [tests 5/5] COPY src ./src
+#15 DONE 0.1s
+
+#16 [build 1/1] RUN mvn -B -q package -DskipTests
+#16 DONE 21.7s
+
+#17 [runtime 4/4] COPY --from=build /app/target/orders.jar app.jar
+#17 DONE 0.1s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 1.2s done
+#18 exporting manifest sha256:82c3e557bef30d7f1c233a30953ddee8a3ae45c4702713ffda51bbcba487d297 done
+#18 exporting config sha256:4cb2a215ac887b2a2268d71308b9dae07ba636d0c5f89ed771d4adac55a0bc3c done
+#18 exporting attestation manifest sha256:d62fdd1f0dcac4c04df04859044c224d9dfb74408b3ebbae9bb55cb503f5e5e6 0.0s done
+#18 exporting manifest list sha256:623816be38a0d3eb7f2ca35383e9513274ef9a1bee3f773f79fb0a06a220e7c1 done
+#18 naming to docker.io/library/orders-ci-verificacion:1 done
+#18 unpacking to docker.io/library/orders-ci-verificacion:1
+#18 unpacking to docker.io/library/orders-ci-verificacion:1 1.0s done
+#18 naming to docker.io/library/orders-ci-verificacion:latest done
+#18 unpacking to docker.io/library/orders-ci-verificacion:latest done
+#18 DONE 2.3s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/tltf93h15qqt9v74bqpp1392y
+EXIT=0
+IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
+orders-ci-verificacion:1        623816be38a0        393MB          123MB        
+orders-ci-verificacion:latest   623816be38a0        393MB          123MB        
+imagen orders-ci-verificacion:1 creada=2026-11-24T02:21:00.114654957Z usuario=app healthcheck=[CMD-SHELL wget -qO- http://localhost:8080/api/info || exit 1] entrypoint=[java -jar /app/app.jar]

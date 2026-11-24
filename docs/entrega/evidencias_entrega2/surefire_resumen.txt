@@ -1,0 +1,7 @@
+=== 2026-11-23 21:25:29 -05 | resumen de target/surefire-reports (verificacion local, commit ee13139) ===
+ name="com.stores.orders.OrdersApplicationTests" time="3.788" tests="1" errors="0" skipped="0" failures="0"
+ name="com.stores.orders.service.InventoryServiceTest" time="0.389" tests="6" errors="0" skipped="0" failures="0"
+ name="com.stores.orders.service.OrderCalculatorTest" time="0.021" tests="9" errors="0" skipped="0" failures="0"
+ name="com.stores.orders.service.OrderServiceTest" time="0.137" tests="4" errors="0" skipped="0" failures="0"
+ name="com.stores.orders.web.OpenApiDocumentationTest" time="1.294" tests="2" errors="0" skipped="0" failures="0"
+ name="com.stores.orders.web.OrderControllerTest" time="0.272" tests="3" errors="0" skipped="0" failures="0"

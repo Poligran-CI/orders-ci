@@ -1,0 +1,132 @@
+{
+    "_links": {
+        "self": {
+            "href": "/job/integracion-continua-backend-orders-ci/2/wfapi/describe"
+        },
+        "artifacts": {
+            "href": "/job/integracion-continua-backend-orders-ci/2/wfapi/artifacts"
+        }
+    },
+    "id": "2",
+    "name": "#2",
+    "status": "SUCCESS",
+    "startTimeMillis": 1795490134331,
+    "endTimeMillis": 1795490267840,
+    "durationMillis": 133509,
+    "queueDurationMillis": 8,
+    "pauseDurationMillis": 0,
+    "stages": [
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/6/wfapi/describe"
+                }
+            },
+            "id": "6",
+            "name": "Declarative: Checkout SCM",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490136686,
+            "durationMillis": 602,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/17/wfapi/describe"
+                }
+            },
+            "id": "17",
+            "name": "Declarative: Tool Install",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490137469,
+            "durationMillis": 222,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/27/wfapi/describe"
+                }
+            },
+            "id": "27",
+            "name": "Verify version",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490137756,
+            "durationMillis": 1125,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/42/wfapi/describe"
+                }
+            },
+            "id": "42",
+            "name": "Build",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490138908,
+            "durationMillis": 2825,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/55/wfapi/describe"
+                }
+            },
+            "id": "55",
+            "name": "Test",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490141760,
+            "durationMillis": 8977,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/69/wfapi/describe"
+                }
+            },
+            "id": "69",
+            "name": "Package",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490150763,
+            "durationMillis": 2815,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/83/wfapi/describe"
+                }
+            },
+            "id": "83",
+            "name": "Docker Build",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490153607,
+            "durationMillis": 113923,
+            "pauseDurationMillis": 0
+        },
+        {
+            "_links": {
+                "self": {
+                    "href": "/job/integracion-continua-backend-orders-ci/2/execution/node/96/wfapi/describe"
+                }
+            },
+            "id": "96",
+            "name": "Declarative: Post Actions",
+            "execNode": "",
+            "status": "SUCCESS",
+            "startTimeMillis": 1795490267557,
+            "durationMillis": 72,
+            "pauseDurationMillis": 0
+        }
+    ]
+}
