@@ -713,8 +713,8 @@ Ejecutores & El pipeline usa \texttt{agent any} y corre en el nodo integrado (co
 configuraron agentes, aunque se publica el puerto 50000. & Controlador sin ejecutores y agentes
 efímeros (contenedores o máquinas virtuales) para aislar las construcciones \cite{jenkins-security}.\\
 Java del controlador & JDK~17 incluido en la imagen oficial. & Igual (Java 17 o 21 soportados).\\
-Herramientas de build & JDK~21 (Corretto 21.0.13.1) y Maven montados desde el anfitrión; en \texttt{feature/jenkins-portable},
-incluidos en la imagen. & Imagen de
+Herramientas de build & Hasta \texttt{ee13139}, JDK~21 (Corretto 21.0.13.1) y Maven montados desde el anfitrión; desde el
+PR~\#2, incluidos en la imagen. & Imagen de
 agente con JDK~21, Maven y CLI de Docker fijados por versión, o instaladores automáticos de
 herramientas.\\
 Docker & Socket del anfitrión compartido con el contenedor. & Agente dedicado con Docker aislado,
@@ -801,8 +801,8 @@ El procedimiento reproducible a partir del repositorio, según los archivos vers
         variables de Jenkins de la tabla~\ref{tab:variables} (contraseña del administrador, token,
         modo de disparo, URL pública y GID de Docker).
   \item Obtener el GID real del grupo \texttt{docker} con \texttt{getent group docker | cut -d: -f3}.
-  \item En \texttt{master}, ajustar en \ruta{jenkins/docker-compose.yml} las rutas del JDK~21 y de
-        Maven del anfitrión. En \texttt{feature/jenkins-portable} este paso no es necesario.
+  \item Hasta \texttt{ee13139} era necesario ajustar en \ruta{jenkins/docker-compose.yml} las rutas
+        del JDK~21 y de Maven del anfitrión; desde el PR~\#2 este paso ya no es necesario.
   \item Construir e iniciar el servidor:
 \end{enumerate}
 \begin{lstlisting}[language=shell]
@@ -952,7 +952,7 @@ vista no está disponible, y la visualización de etapas la ofrece \texttt{pipel
 \texttt{JENKINS\_ADMIN\_PASSWORD} & \texttt{.env} & JCasC: contraseña del usuario \texttt{admin} & Sí\\
 \texttt{GITHUB\_TOKEN} & \texttt{.env} & JCasC: credencial \texttt{github-token} (\emph{Secret text}) & Sí\\
 \texttt{USE\_GITHUB\_WEBHOOK} & \texttt{.env} & Job DSL: elige \texttt{githubPush()} o \texttt{pollSCM} & No\\
-\texttt{JENKINS\_BRANCH} & \texttt{.env} & Job DSL: rama construida (solo en \texttt{feature/jenkins-portable}; por defecto \texttt{*/master}) & No\\
+\texttt{JENKINS\_BRANCH} & \texttt{.env} & Job DSL: rama construida (desde el PR~\#2; por defecto \texttt{*/master}) & No\\
 \texttt{JENKINS\_PUBLIC\_URL} & \texttt{.env} & JCasC: URL del servidor (\texttt{location.url}) & No\\
 \texttt{DOCKER\_GID} & \texttt{.env} & Compose: \texttt{group\_add} (requiere \texttt{--env-file}) & No\\
 \texttt{CASC\_JENKINS\_CONFIG} & Dockerfile y Compose & Ruta del archivo JCasC & No\\
@@ -1586,7 +1586,7 @@ Arranque & \texttt{docker compose --env-file .env -f jenkins/docker-compose.yml 
 \bottomrule
 \end{tabularx}
 \caption{Cambios de la rama \texttt{feature/jenkins-portable} respecto de \texttt{master} (commit
-\texttt{5a76d6c}, publicado en GitHub; aún no integrado en \texttt{master}).}
+\texttt{5a76d6c}), integrados en \texttt{master} mediante el PR~\#2 (\texttt{864bcc3}).}
 \label{tab:cambios-rama}
 \end{table}
 
@@ -1793,6 +1793,16 @@ El \emph{webhook} queda registrado en el repositorio, pero solo funciona mientra
 fallan sin afectar al repositorio. Para un uso permanente se necesita un Jenkins accesible de forma
 estable y un secreto en el \emph{webhook}.
 
+\paragraph{Integración en \texttt{master}.} Los cambios se integraron en \texttt{master} mediante el
+\emph{pull request} \#2 (\emph{merge} \texttt{864bcc3}, 24 de noviembre de 2026, 04:37 UTC), cuyo
+chequeo de GitHub Actions (\texttt{tests}) terminó en verde. Después se quitó
+\texttt{JENKINS\_BRANCH} del \texttt{.env}, de modo que el job volvió a la rama por defecto
+\texttt{*/master}, conservando el disparador \texttt{githubPush()}, y se lanzó la ejecución manual
+\#6, necesaria para que el \emph{webhook} consulte \texttt{master} (la \#5 la había disparado el
+\emph{webhook} con el último \emph{push} de la rama, commit \texttt{94ddd7f}, también con éxito). Terminó en
+\textcolor{ok}{SUCCESS} en 25,5~s sobre \texttt{864bcc3}, con 25 pruebas aprobadas
+(\ruta{jenkins_build6_console.txt}).
+
 \reservar{16cm}
 \subsection{Síntesis de evidencias}
 
@@ -1836,6 +1846,8 @@ E15 & \emph{Webhook} \texttt{716049034}, entregas, registros y ejecución \#4
 (listados~\ref{lst:webhook-entregas}--\ref{lst:webhook-poll}, figuras~\ref{fig:build4-webhook}
 y~\ref{fig:stageview-webhook}) & Un \emph{push} a GitHub dispara el pipeline sin \emph{polling}. &
 \emph{Webhooks}, detección de cambios\\
+E16 & PR~\#2 y ejecución \#6 sobre \texttt{master} (\texttt{864bcc3}) & La instalación portable
+funciona desde \texttt{master}. & Instalación de Jenkins\\
 \bottomrule
 \end{tabularx}
 \caption{Evidencias, lo que demuestran y el requisito con el que se relacionan.}
@@ -1863,8 +1875,9 @@ pruebas del frontend; una ejecución de Jenkins con pruebas fallidas.
 \textbf{Estado}\\
 \midrule
 \endhead
-Instalación de Jenkins & Contenedor Docker con imagen propia, Compose y volumen persistente &
-E1, E9, E11 & \parcial{} (portable en una rama publicada, aún sin integrar en \texttt{master})\\
+Instalación de Jenkins & Contenedor Docker con imagen propia (herramientas incluidas), Compose y
+volumen persistente; integrada en \texttt{master} (PR~\#2) &
+E1, E9, E11, E16 & \ok\\
 Configuración de Jenkins & JCasC + Job DSL; sin configuración manual & E2 & \ok\\
 Plugins & 12 plugins declarados (80 instalados con dependencias); 9 en uso & E1, E14, tabla~\ref{tab:plugins} & \ok\\
 Credenciales y secretos & \texttt{.env} no versionado; variables en JCasC; credencial cifrada &
@@ -1881,7 +1894,7 @@ Pipeline del frontend en Jenkins & No implementado; solo GitHub Actions en rama 
 \pend\\
 Detección de cambios en GitHub & \texttt{pollSCM H/2 * * * *} sobre \texttt{master}; \texttt{githubPush()} en modo \emph{webhook} & E2, E11, E12, E15 &
 \ok\\
-\emph{Webhooks} & \emph{Webhook} de \emph{push} activo vía \texttt{smee.io}; ejecución \#4 disparada por GitHub & E15 & \parcial{} (activo solo en la rama y con el equipo local encendido)\\
+\emph{Webhooks} & \emph{Webhook} de \emph{push} activo vía \texttt{smee.io}; ejecución \#4 disparada por GitHub & E15 & \parcial{} (depende del equipo local y de \texttt{smee.io}; sin secreto)\\
 Evidencias de ejecución en Jenkins & Informe del equipo (\#1--\#4) y ejecuciones propias (\#1--\#4) & E4, E5, E11, E14, E15 &
 \ok\\
 Capturas y registros de consola de Jenkins & Capturas, consola, etapas y JUnit exportados & E11--E13, E15 & \ok\\
@@ -1922,9 +1935,6 @@ condiciones de uso de ambos servicios deberán comprobarse en el momento de la e
   \item Integrar la corrección del disparador de GitHub Actions (\texttt{0bad97e}).
   \item Añadir un secreto al \emph{webhook} y alojar Jenkins en un servidor accesible de forma
         estable, en lugar de depender de \texttt{smee.io} y de un equipo personal.
-  \item Revisar e integrar en \texttt{master} la rama \texttt{feature/jenkins-portable}, que ya
-        sustituye los montajes del anfitrión por herramientas dentro de la imagen y corrige la URL
-        del repositorio para el \emph{webhook}.
   \item Publicar la imagen en un registro y desplegarla automáticamente en el ambiente \texttt{dev}
         con \texttt{docker compose}, avanzando hacia la entrega continua.
   \item Añadir \texttt{timeout}, limpieza del espacio de trabajo y de imágenes antiguas, y
@@ -1967,10 +1977,10 @@ condiciones de uso de ambos servicios deberán comprobarse en el momento de la e
   \item Frente al proceso convencional, la ejecución de las pruebas deja de depender de una persona:
         ocurre siempre, con las mismas herramientas, y bloquea la generación de artefactos cuando
         falla una prueba.
-  \item Las limitaciones son claras: en \texttt{master} la instalación depende de rutas de un equipo
-        concreto (resuelto en \texttt{feature/jenkins-portable}, pendiente de integrar) y
-        \texttt{DOCKER\_GID} solo se aplica con \texttt{--env-file}; el \emph{webhook} solo funciona
-        en la rama y con el equipo local encendido, y no tiene secreto; todo usuario autenticado es
+  \item La dependencia de rutas de un equipo concreto se resolvió e integró en \texttt{master}
+        (PR~\#2). Las limitaciones que persisten son claras: \texttt{DOCKER\_GID} solo se aplica con
+        \texttt{--env-file}; el \emph{webhook} depende del equipo local y de \texttt{smee.io}, y no
+        tiene secreto; todo usuario autenticado es
         administrador y el socket de Docker otorga
         control del anfitrión; no hay registro de imágenes ni despliegue; y el frontend no tiene
         pipeline en Jenkins.
@@ -2138,10 +2148,10 @@ la imagen.\\
 consulta de \emph{webhooks} previa a obtener permisos.\\
 \texttt{jenkins\_local\_build.txt} & Construcción de la imagen de Jenkins, hallazgo de
 \texttt{DOCKER\_GID}, herramientas del contenedor y carga de JCasC.\\
-\texttt{jenkins\_build\{1..4\}\_console.txt} & Consola completa de las ejecuciones \#1 a \#4.\\
-\texttt{jenkins\_build\{1..4\}\_stages.json} & Etapas y duraciones (\texttt{wfapi/describe}).\\
-\texttt{jenkins\_build\{1..4\}\_tests.json} & Reporte JUnit publicado por Jenkins.\\
-\texttt{jenkins\_build\{1..4\}\_info.json} & Causa, fecha y duración.\\
+\texttt{jenkins\_build\{1..4,6\}\_console.txt} & Consola completa de las ejecuciones \#1 a \#4 y \#6.\\
+\texttt{jenkins\_build\{1..4,6\}\_stages.json} & Etapas y duraciones (\texttt{wfapi/describe}).\\
+\texttt{jenkins\_build\{1..4,6\}\_tests.json} & Reporte JUnit publicado por Jenkins.\\
+\texttt{jenkins\_build\{1..4,6\}\_info.json} & Causa, fecha y duración.\\
 \texttt{github\_webhook\_config.json} & Configuración del \emph{webhook}, sin la URL del canal.\\
 \texttt{github\_webhook\_entregas.txt} & Entregas del \emph{webhook} (\emph{ping} y \emph{push}) con su código de respuesta.\\
 \texttt{jenkins\_webhook\_eventos.txt} & Eventos de GitHub registrados en el log de Jenkins.\\
@@ -2173,8 +2183,9 @@ verificaciones en contenedores sobre una copia del commit \texttt{ee13139}; a pe
 creación de la rama \texttt{feature/jenkins-portable}, ejecución de Jenkins, registro del
 \emph{webhook} y exportación de evidencias; redacción de la Parte~II, diagramas e integración de ambas entregas en este documento.\\
 Restricciones aplicadas & No se modificó el código de la aplicación ni el frontend; los cambios de
-configuración de Jenkins se confirmaron y publicaron, a petición del equipo, solo en
-\texttt{feature/jenkins-portable} (\texttt{master} no se modificó); no se incluyeron secretos. Los datos de las ejecuciones \#1--\#4 provienen del
+configuración de Jenkins se confirmaron y publicaron, a petición del equipo, en
+\texttt{feature/jenkins-portable}, y el equipo los integró en \texttt{master} mediante el PR~\#2;
+no se incluyeron secretos. Los datos de las ejecuciones \#1--\#4 provienen del
 informe del equipo y se identifican como tales.\\
 Responsabilidad & El equipo revisa, valida y asume el contenido entregado.\\
 \bottomrule
