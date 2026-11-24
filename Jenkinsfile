@@ -8,9 +8,11 @@
 def currentStage = 'ninguna'
 
 // docker compose con las credenciales de la base de datos tomadas de la credencial
-// "orders-db" de Jenkins (variables DB_CREDS_USR y DB_CREDS_PSW, enmascaradas en la consola).
+// "orders-db" de Jenkins (variables DB_CREDS_USR y DB_CREDS_PSW). La primera línea desactiva
+// la traza del shell (sh -x) para que ni el usuario ni la contraseña aparezcan en la consola.
 def compose(String args) {
-    sh 'DB_USER="$DB_CREDS_USR" DB_PASSWORD="$DB_CREDS_PSW" docker compose ' + args
+    sh '#!/bin/sh -e\necho "+ docker compose ' + args + '"\n' +
+       'DB_USER="$DB_CREDS_USR" DB_PASSWORD="$DB_CREDS_PSW" docker compose ' + args
 }
 
 pipeline {
