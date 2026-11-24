@@ -9,8 +9,10 @@ ENV CASC_JENKINS_CONFIG=/var/jenkins_casc/jenkins.yaml \
 COPY --from=eclipse-temurin:21-jdk /opt/java/openjdk /opt/jdk21
 COPY --from=maven:3.9-eclipse-temurin-21 /usr/share/maven /usr/share/maven
 COPY --from=docker:29-cli /usr/local/bin/docker /usr/bin/docker
-# BuildKit (buildx) plugin: avoids the deprecated legacy builder in the "Docker Build" stage.
+# BuildKit (buildx) plugin: used by "docker compose build" (avoids the deprecated legacy builder).
 COPY --from=docker:29-cli /usr/local/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
+# Docker Compose plugin: the pipeline starts the API and PostgreSQL containers with "docker compose".
+COPY --from=docker:29-cli /usr/local/libexec/docker/cli-plugins/docker-compose /usr/libexec/docker/cli-plugins/docker-compose
 
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt --jenkins-version ${JENKINS_VERSION}
