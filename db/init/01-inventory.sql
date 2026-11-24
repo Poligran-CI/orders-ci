@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 );
 
 INSERT INTO inventory (sku, quantity) VALUES
-    ('RICE', 1),
+    ('RICE', 100),
     ('OIL', 50),
     ('SUGAR', 5)
 ON CONFLICT (sku) DO NOTHING;
